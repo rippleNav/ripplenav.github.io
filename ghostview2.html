@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consciousness Influence Visualizer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 1rem;
+        }
+
+        h1,
+        h2 {
+            font-weight: 300;
+            text-align: center;
+        }
+
+        p {
+            max-width: 640px;
+            text-align: center;
+            color: #999;
+            line-height: 1.5;
+        }
+
+        #canvas-container {
+            margin: 1rem 0;
+            border: 2px solid #444;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #controls {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            /* Increased gap */
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        button {
+            background-color: #333;
+            color: #e0e0e0;
+            border: 1px solid #555;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #007bff;
+        }
+
+        button:disabled {
+            background-color: #222;
+            color: #555;
+            cursor: not-allowed;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Styles for the new slider */
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 200px;
+        }
+
+        .slider-container label {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Consciousness Influence Visualizer</h1>
+    <p>
+        Use the Sensitivity slider to amplify or reduce the deviation signal. A higher sensitivity will create a higher
+        contrast image, revealing more subtle fluctuations.
+    </p>
+
+    <div id="canvas-container">
+        <canvas id="displayCanvas" width="512" height="512"></canvas>
+    </div>
+
+    <div id="controls">
+        <div class="control-group">
+            <button id="toggleColorBtn">Mode: Grayscale</button>
+            <button id="togglePlacementBtn">Mode: Random Placement</button>
+        </div>
+
+        <!-- NEW: Sensitivity Slider -->
+        <div class="control-group slider-container">
+            <label for="sensitivitySlider">Sensitivity: <span id="sensitivityValue">10</span></label>
+            <input type="range" id="sensitivitySlider" min="1" max="40" value="10" step="1">
+        </div>
+
+        <div class="control-group">
+            <button id="saveBtn">Save Image</button>
+            <button id="startAutoSaveBtn">Start Auto-Save</button>
+            <button id="stopAutoSaveBtn" disabled>Stop Auto-Save</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('displayCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // --- STATE VARIABLES ---
+            let colorMode = 'grayscale';
+            let placementMode = 'random';
+            let sensitivity = 10; // Default sensitivity
+
+            let history = [];
+            const LONG_AVE_SAMPLES = 500;
+            const SHORT_AVE_SAMPLES = 10;
+            let longAve = 0.5, shortAve = 0.5;
+
+            let deviationGrid = Array(height).fill(null).map(() => Array(width).fill(0));
+
+            let seqX = 0, seqY = 0;
+            let autoSaveIntervalId = null;
+
+            // --- DOM ELEMENTS ---
+            const toggleColorBtn = document.getElementById('toggleColorBtn');
+            const togglePlacementBtn = document.getElementById('togglePlacementBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const startAutoSaveBtn = document.getElementById('startAutoSaveBtn');
+            const stopAutoSaveBtn = document.getElementById('stopAutoSaveBtn');
+            const sensitivitySlider = document.getElementById('sensitivitySlider');
+            const sensitivityValue = document.getElementById('sensitivityValue');
+
+            // --- CORE LOGIC ---
+            function updateAverages(newValue) {
+                history.push(newValue);
+                if (history.length > LONG_AVE_SAMPLES) history.shift();
+
+                let shortSum = 0;
+                const shortHistory = history.slice(-SHORT_AVE_SAMPLES);
+                for (const val of shortHistory) shortSum += val;
+                shortAve = shortHistory.length ? shortSum / shortHistory.length : 0.5;
+
+                let longSum = 0;
+                for (const val of history) longSum += val;
+                longAve = history.length ? longSum / history.length : 0.5;
+            }
+
+            // --- COLOR MAPPING (UPDATED) ---
+            function getColorForDeviation(deviation) {
+                // NEW: Use the sensitivity slider value
+                const normalized = Math.max(0, Math.min(1, (deviation * sensitivity) + 0.5));
+
+                if (colorMode === 'grayscale') {
+                    const shade = Math.floor(normalized * 255);
+                    return `rgb(${shade},${shade},${shade})`;
+                } else { // heatmap
+                    let r, g, b;
+                    // Blue -> Black -> Red heatmap for better centering
+                    if (normalized < 0.5) { // From Blue (0) to Black (0.5)
+                        r = 0;
+                        g = 0;
+                        b = Math.floor(255 * (1 - normalized * 2));
+                    } else { // From Black (0.5) to Red (1)
+                        r = Math.floor(255 * ((normalized - 0.5) * 2));
+                        g = 0;
+                        b = 0;
+                    }
+                    return `rgb(${r},${g},${b})`;
+                }
+            }
+
+            // --- MAIN LOOP ---
+            function mainLoop() {
+                const opsPerFrame = 800;
+                for (let i = 0; i < opsPerFrame; i++) {
+                    const newValue = Math.random();
+                    updateAverages(newValue);
+                    const deviation = shortAve - longAve;
+
+                    let x, y;
+                    if (placementMode === 'random') {
+                        x = Math.floor(Math.random() * width);
+                        y = Math.floor(Math.random() * height);
+                    } else {
+                        x = seqX; y = seqY;
+                        seqX++;
+                        if (seqX >= width) { seqX = 0; seqY++; if (seqY >= height) seqY = 0; }
+                    }
+                    deviationGrid[y][x] = deviation;
+                    ctx.fillStyle = getColorForDeviation(deviation);
+                    ctx.fillRect(x, y, 1, 1);
+                }
+                requestAnimationFrame(mainLoop);
+            }
+
+            // --- UI HANDLERS ---
+            function clearCanvas() {
+                deviationGrid = Array(height).fill(null).map(() => Array(width).fill(0));
+                ctx.fillStyle = getColorForDeviation(0);
+                ctx.fillRect(0, 0, width, height);
+                seqX = 0; seqY = 0;
+            }
+
+            function redrawCanvasFromGrid() {
+                const imageData = ctx.createImageData(width, height);
+                const data = imageData.data;
+                for (let y = 0; y < height; y++) {
+                    for (let x = 0; x < width; x++) {
+                        const deviation = deviationGrid[y][x];
+                        const color = getColorForDeviation(deviation);
+                        const [r, g, b] = color.match(/\d+/g).map(Number);
+                        const index = (y * width + x) * 4;
+                        data[index] = r; data[index + 1] = g; data[index + 2] = b; data[index + 3] = 255;
+                    }
+                }
+                ctx.putImageData(imageData, 0, 0);
+            }
+
+            toggleColorBtn.addEventListener('click', () => {
+                colorMode = (colorMode === 'grayscale') ? 'heatmap' : 'grayscale';
+                toggleColorBtn.textContent = `Mode: ${colorMode === 'grayscale' ? 'Grayscale' : 'Heatmap'}`;
+                redrawCanvasFromGrid();
+            });
+
+            togglePlacementBtn.addEventListener('click', () => {
+                placementMode = (placementMode === 'random') ? 'sequential' : 'random';
+                togglePlacementBtn.textContent = `Mode: ${placementMode === 'random' ? 'Random' : 'Sequential'} Placement`;
+                clearCanvas();
+            });
+
+            // NEW: Event listener for the slider
+            sensitivitySlider.addEventListener('input', (e) => {
+                sensitivity = Number(e.target.value);
+                sensitivityValue.textContent = sensitivity;
+                redrawCanvasFromGrid();
+            });
+
+            // --- SAVING FUNCTIONS ---
+            function saveImage() {
+                const link = document.createElement('a');
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                link.download = `deviation-image-${timestamp}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+
+            function startAutoSaving() {
+                if (autoSaveIntervalId) return;
+                startAutoSaveBtn.disabled = true;
+                stopAutoSaveBtn.disabled = false;
+                autoSaveIntervalId = setInterval(saveImage, 100);
+            }
+
+            function stopAutoSaving() {
+                if (!autoSaveIntervalId) return;
+                clearInterval(autoSaveIntervalId);
+                autoSaveIntervalId = null;
+                startAutoSaveBtn.disabled = false;
+                stopAutoSaveBtn.disabled = true;
+            }
+
+            // --- INITIALIZATION ---
+            function init() {
+                for (let i = 0; i < LONG_AVE_SAMPLES; i++) history.push(Math.random());
+                saveBtn.addEventListener('click', saveImage);
+                startAutoSaveBtn.addEventListener('click', startAutoSaving);
+                stopAutoSaveBtn.addEventListener('click', stopAutoSaving);
+                clearCanvas();
+                mainLoop();
+            }
+
+            init();
+        });
+    </script>
+
+</body>
+
+</html>

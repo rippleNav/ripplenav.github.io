@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psychic Imaging Experiment</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 1rem;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-weight: 300;
+            text-align: center;
+        }
+
+        p {
+            max-width: 600px;
+            text-align: center;
+            color: #999;
+            line-height: 1.5;
+        }
+
+        #canvas-container {
+            margin-top: 1rem;
+            border: 2px solid #444;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #controls {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            background-color: #333;
+            color: #e0e0e0;
+            border: 1px solid #555;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        button:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        button:disabled {
+            background-color: #222;
+            color: #555;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Paranormal Imaging Software</h1>
+    <p>
+        This application generates an image from pseudorandom data, inspired by ITC (Instrumental Transcommunication)
+        research. The canvas is continuously altered by random processes. Observe the static for emergent patterns or
+        images.
+    </p>
+
+    <div id="canvas-container">
+        <canvas id="displayCanvas" width="512" height="512"></canvas>
+    </div>
+
+    <div id="controls">
+        <button id="saveBtn">Save Image</button>
+        <button id="startAutoSaveBtn">Start Auto-Save</button>
+        <button id="stopAutoSaveBtn" disabled>Stop Auto-Save</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('displayCanvas');
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            const width = canvas.width;
+            const height = canvas.height;
+
+            const saveBtn = document.getElementById('saveBtn');
+            const startAutoSaveBtn = document.getElementById('startAutoSaveBtn');
+            const stopAutoSaveBtn = document.getElementById('stopAutoSaveBtn');
+
+            let autoSaveIntervalId = null;
+
+            // --- UTILITY FUNCTIONS ---
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            function getRandomColor() {
+                const r = getRandomInt(0, 255);
+                const g = getRandomInt(0, 255);
+                const b = getRandomInt(0, 255);
+                return `rgba(${r}, ${g}, ${b}, ${Math.random() * 0.5 + 0.1})`; // Add some transparency
+            }
+
+            // --- MODIFICATION FUNCTIONS ---
+
+            // Modifies a small block of pixels (1x1, 1x2, 2x1, 2x2)
+            function modifyPixels() {
+                const x = getRandomInt(0, width - 2);
+                const y = getRandomInt(0, height - 2);
+                const blockType = getRandomInt(0, 3);
+
+                let w = 1, h = 1;
+                if (blockType === 1) w = 2; // 2x1
+                if (blockType === 2) h = 2; // 1x2
+                if (blockType === 3) { w = 2; h = 2; } // 2x2
+
+                const imageData = ctx.getImageData(x, y, w, h);
+                const data = imageData.data;
+
+                for (let i = 0; i < data.length; i += 4) {
+                    const colorChannel = getRandomInt(0, 2); // 0:R, 1:G, 2:B
+                    const change = getRandomInt(-10, 10);
+                    data[i + colorChannel] = Math.max(0, Math.min(255, data[i + colorChannel] + change));
+                }
+                ctx.putImageData(imageData, x, y);
+            }
+
+            // Draws a small random triangle
+            function drawTriangle() {
+                ctx.fillStyle = getRandomColor();
+                ctx.beginPath();
+
+                // Make triangles smaller by keeping vertices relatively close
+                const x1 = getRandomInt(0, width);
+                const y1 = getRandomInt(0, height);
+                const maxOffset = 50; // Max distance for other points
+
+                const x2 = x1 + getRandomInt(-maxOffset, maxOffset);
+                const y2 = y1 + getRandomInt(-maxOffset, maxOffset);
+                const x3 = x1 + getRandomInt(-maxOffset, maxOffset);
+                const y3 = y1 + getRandomInt(-maxOffset, maxOffset);
+
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.lineTo(x3, y3);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // Shifts a small block of pixels by 1 pixel
+            function shiftPixels() {
+                const size = 5; // size of the block to shift
+                const sx = getRandomInt(0, width - size);
+                const sy = getRandomInt(0, height - size);
+
+                const imageData = ctx.getImageData(sx, sy, size, size);
+
+                const direction = getRandomInt(0, 3);
+                let dx = sx, dy = sy;
+                if (direction === 0) dx++; // Right
+                if (direction === 1) dx--; // Left
+                if (direction === 2) dy++; // Down
+                if (direction === 3) dy--; // Up
+
+                // Ensure it stays within bounds
+                dx = Math.max(0, Math.min(width - size, dx));
+                dy = Math.max(0, Math.min(height - size, dy));
+
+                ctx.putImageData(imageData, dx, dy);
+            }
+
+            // --- MAIN LOOP ---
+            function mainLoop() {
+                // Perform many operations per frame for a faster effect
+                const operationsPerFrame = 200;
+                for (let i = 0; i < operationsPerFrame; i++) {
+                    const action = Math.random();
+                    if (action < 0.75) { // 75% chance
+                        modifyPixels();
+                    } else if (action < 0.90) { // 15% chance
+                        drawTriangle();
+                    } else { // 10% chance
+                        shiftPixels();
+                    }
+                }
+                requestAnimationFrame(mainLoop);
+            }
+
+            // --- UI FUNCTIONS ---
+            function saveImage() {
+                const link = document.createElement('a');
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                link.download = `spirit-image-${timestamp}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+
+            function startAutoSaving() {
+                if (autoSaveIntervalId) return; // Already running
+                startAutoSaveBtn.disabled = true;
+                stopAutoSaveBtn.disabled = false;
+                autoSaveIntervalId = setInterval(saveImage, 100);
+            }
+
+            function stopAutoSaving() {
+                if (!autoSaveIntervalId) return; // Not running
+                clearInterval(autoSaveIntervalId);
+                autoSaveIntervalId = null;
+                startAutoSaveBtn.disabled = false;
+                stopAutoSaveBtn.disabled = true;
+            }
+
+            // --- INITIALIZATION ---
+            function init() {
+                // Start with a uniform grey background
+                ctx.fillStyle = '#808080';
+                ctx.fillRect(0, 0, width, height);
+
+                saveBtn.addEventListener('click', saveImage);
+                startAutoSaveBtn.addEventListener('click', startAutoSaving);
+                stopAutoSaveBtn.addEventListener('click', stopAutoSaving);
+
+                // Start the process
+                mainLoop();
+            }
+
+            init();
+        });
+    </script>
+
+</body>
+
+</html>
