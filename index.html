@@ -4558,13 +4558,14 @@ The copyright to this software, including all code, assets, and documentation, i
 
 
   <!-- Extracted JavaScript for the Top Panel -->
+
   <script>
     // Global variables required by the panel functions
     var running = false;
     var moduleInitialized = false;
     var currentModule;
-    var cv = '...'; // A version variable, replace with actual value.
-    var ms_ = 1; // A variable from the original script, seems to enable the slider on the main page.
+    var cv = '...';
+    var ms_ = 1;
 
     var slider2 = document.getElementById("myRange");
     var slider = document.getElementById("m1");
@@ -4575,9 +4576,9 @@ The copyright to this software, including all code, assets, and documentation, i
     }
 
     slider2.addEventListener('input', function () {
-      // 'this.value' refers to the current value of slider2
       showSens.innerHTML = this.value;
     });
+
     // --- Core Panel Functions ---
 
     window.runNumberFinder = function () {
@@ -4588,29 +4589,38 @@ The copyright to this software, including all code, assets, and documentation, i
         return;
       }
 
-      let timeused = 0, lastTime = 0, desired_frame_time = 16.7;
-      let lastLogTime = performance.now();
+      let lastTime = null; // Used to track delta time
       let last_sPos = 0;
       running = true;
 
-
       function frame(timestamp) {
         if (running && moduleInitialized) {
-          // We don't need 'fix' or the timing calculations for this goal.
-          // let now = timestamp || performance.now(); ...etc.
+
+          // 1. Calculate how much time has passed since the last frame
+          if (lastTime === null) lastTime = timestamp;
+          let deltaTime = timestamp - lastTime;
+          lastTime = timestamp;
+
+          // Cap deltaTime to 100ms. If the user tabs out and tabs back in,
+          // this prevents a massive jump in the animation.
+          if (deltaTime > 100) deltaTime = 16.666;
 
           try {
-            // 1. Get the raw "change" value from Wasm and scale it.
             let target_sPos = Module._getData() * 0.5;
 
-            // 2. Use YOUR lerp to smoothly move the visual position towards this new target value.
-            // This creates the smooth animation of the change.
-            let smoothed_sPos = lerp(target_sPos, last_sPos, 0.95);
+            // 2. Make the lerp factor frame-rate independent.
+            // 16.666ms is the target frame time for 60fps.
+            // By raising 0.95 to the power of (deltaTime / 16.666),
+            // the smoothing curve is mathematically identical on 60Hz, 120Hz, 144Hz, etc.
+            let timeAdjustedFactor = Math.pow(0.95, deltaTime / 16.666);
 
-            // 3. Update the last position for the next frame's smoothing.
+            // 3. Apply the dynamic time-adjusted factor to your lerp
+            let smoothed_sPos = lerp(target_sPos, last_sPos, timeAdjustedFactor);
+
+            // 4. Update the last position for the next frame's smoothing.
             last_sPos = smoothed_sPos;
 
-            // 4. Apply sensitivity from the slider.
+            // 5. Apply sensitivity from the slider.
             let final_sPos = smoothed_sPos * (slider2.value / 100);
 
             slider.style.backgroundPosition = final_sPos + "px";
@@ -4632,8 +4642,6 @@ The copyright to this software, including all code, assets, and documentation, i
         console.warn("WASM module not initialized. Animation will not start yet.");
       }
     }
-
-
 
   </script>
 
