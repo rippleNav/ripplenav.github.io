@@ -1,0 +1,3778 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!--
+    # Mental Health Application License Agreement
+
+This is a legal agreement between you and the author of this software. By using, downloading, or distributing this software, you agree to be bound by the terms of this license.
+
+---
+
+### 1. Permitted Uses
+
+You are granted a non-exclusive, non-transferable license to use this software for personal, non-commercial purposes only. You may:
+
+* Download, copy, and run the software on your personal device.
+* Host the software on a public web server for your personal use or to share with others, provided that it remains free to access and non-commercial.
+* Translate the user instructions and help text in the HTML file into another language, provided the core functionality and the embedded WebAssembly (WASM) code remain unchanged.
+
+### 2. Prohibited Uses
+
+You are **not** permitted to do the following:
+
+* **Commercial Use:** You may not sell, rent, lease, or monetize this software in any way, including but not limited to, running advertisements on a hosted version of the software.
+* **Reverse Engineering:** The embedded WebAssembly (WASM) code is proprietary and is not licensed for public use or modification. You may not reverse engineer, decompile, or otherwise attempt to extract the source code or underlying algorithms from the WASM file.
+* **Separation of Components:** You may not extract or use the WASM code separately from the provided HTML file.
+
+### 3. Modification of Instructions
+
+You are permitted to modify the user instructions and help text within the HTML file. However, by doing so, you agree to the following:
+
+* You are solely responsible for the accuracy and safety of any changes you make. The author is not liable for any misinformation or harm caused by your modifications.
+* You may not use the original branding, name, or design of this software in a way that suggests your modified version is endorsed by or associated with the original author.
+
+### 4. Disclaimer of Warranty
+
+THIS SOFTWARE IS PROVIDED "AS IS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+### 5. Copyright
+
+The copyright to this software, including all code, assets, and documentation, is held by **RippleNav**. All rights not explicitly granted in this license are reserved.
+
+---
+
+**2025**
+    
+    
+    -->
+  <link rel="icon" href="favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RippleNav</title>
+  <style>
+    :root {
+      /* Dark theme variables */
+      --ripple-background-color: #8afbe465;
+      --background-color: #e3e3e3;
+      --text-color: #2e2e2ecb;
+      --link-color: #0ff;
+      --border-color: #555;
+      --p1: #d3d3d363;
+      --p2: #b4b4d35a;
+      --h-color: #278cffe9;
+      --text-shadow: 1px 1px 2px rgb(50, 50, 50);
+      --happy: #ffee00;
+      /* Sunny yellow for optimism */
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* Dark theme variables */
+        --ripple-background-color: #8afbe465;
+        --background-color: #404040;
+        --text-color: #ffffffcb;
+        --link-color: #0ff;
+        --border-color: #555;
+        --p1: #65666763;
+        --p2: #4040405a;
+        --h-color: #278cffe9;
+        --text-shadow: 1px 1px 2px rgba(0, 0, 0, 1.0);
+        --happy: #ecdd03;
+        /* Sunny yellow for optimism */
+      }
+    }
+
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: sans-serif;
+      font-size: 1.17rem;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      border-color: #555;
+      display: flex;
+      flex-direction: column;
+      -webkit-text-size-adjust: 100%; /* For Chrome, Safari, Opera */
+      text-size-adjust: 100%;       /* Standard syntax */
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      padding: 10px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--h-color);
+      /* Set color */
+    }
+
+    p {
+      margin: 0;
+      padding: 10px;
+      line-height: 1.5em;
+      color: var(--text-color);
+    }
+
+    a {
+      color: #0ff;
+      font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+    }
+
+    text {
+      font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+      text-shadow: var(--text-shadow);
+      color: var(--header-text-color);
+      /* Set color */
+      font-weight: bold;
+    }
+
+    image-text {
+      font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+      text-shadow: var(--text-shadow);
+      color: var(--happy);
+      font-weight: bold;
+    }
+
+    p:nth-of-type(odd) {
+      background-color: var(--p1);
+    }
+
+    p:nth-of-type(even) {
+      background-color: var(--p2);
+    }
+
+    .top-panel {
+      height: 25vh;
+      padding: 10px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-shrink: 0;
+    }
+
+    .bottom-panel {
+      flex-grow: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .tab {
+      overflow: hidden;
+      border: 1px solid #777;
+      background-color: #000000;
+      color:#c1c1c1;
+      display: flex;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+      /* This allows the tabs to wrap to a new line */
+    }
+
+    .tab button {
+      background-color: inherit;
+      color:#c1c1c1;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 10px 5px;
+      transition: 0.3s;
+    }
+
+    .tab button:hover {
+      background-color: #666;
+    }
+
+    .tab button.active {
+      background-color: #666;
+    }
+
+    /* Find this rule in your CSS */
+    .tabcontent {
+      display: none;
+      padding: 6px 6px;
+      border: 1px solid #ccc;
+      border-top: none;
+      flex-grow: 1;
+      /* This tells the element to grow and fill all available space */
+      overflow-y: auto;
+      /* This is a crucial fix for scrollable content in a flex container */
+      min-height: 0;
+    }
+
+    .tablinks {
+      font-size: 0.9rem; 
+    }
+
+
+    .redBack {
+      background-color: #ff000051
+    }
+
+    .greenBack {
+      background-color: #00ff265d
+    }
+
+    .amberBack {
+      background-color: #ffcc007d
+    }
+
+    .clearBack {
+      background-color: #ffcc0000
+    }
+
+
+
+
+
+
+    /* Styles for the top panel elements */
+    #hh {
+      font-weight: bold;
+    }
+
+
+    .slider {
+      position: relative;
+      z-index: -1;
+      max-width: 100%;
+      background-repeat: repeat-x;
+      padding: 40px;
+      text-align: center;
+      background: url('data:image/MIME_TYPE;base64,iVBORw0KGgoAAAANSUhEUgAAANYAAAAQCAYAAABqUoGHAAAAAXNSR0IB2cksfwAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAuIwAALiMBeKU/dgAAAAd0SU1FB+kIGwAXFFWuK14AAAsnSURBVGjetVvJduS4EYxISuoube2Z8ef76IOP/hKf/BfjN71obUnM8CETIMBNVRpb75WqigRBMPeMQPFff/+bAEISXCM0OlzCOI5wH+EgLi6vAACjC9IIOeKcBHfH+PaGh29/YHxzuEa4Cz46XB6f3UEzXN7ewuVxrzHf3euxt9dXfP/2I66T6vySIAHujrNhwPX1VR7TdE4CBAjC8+srvt8/QkQem15AjP10cYHry8vmOCEyBpAAieeXFzw8PdfvAOtnkhCAy8MBl1dX9Rho8W4EaaAZnp6e8fT8DA55jAZazGdmAImb21tcXl6C5HTeCKvjDb///h8IDrlDo0MpX8mhccThcMDNzU3IbP6CA07c3//A3d0dAEByIGUICcq5rg8HXB4OkMd5yCEB+Q+UcPdwj6enZ6TEwCJoKI5J+HJ9hcPFOSCAKdYYCxgAkvh+f4+fr68wMkQLpgwQx0D8+uUGny4uQDLHESyysfh+9+MH3t4cQ8rdjBjqWMNghl/++hvOLi4Ahtwt5Wo5niQevn4FIAxmsMHqOLMBZsTZ2RmufvkVdnYGS/3RiMEMMGKgYRxHnAmTsOBpzBrT0eI4zVIgDrhBDEfBGO8kQ3npVPLiNGn4nvcwwkSMI8JwPI85i04w+nTvcr0j5nDFao0MfRPwVKwhnIo0MAOF1DvU9D3OMTXNNIfiLEjjBgh3gQY0AwH0zmrGej2N0/UM5QuAy2GjASbIHPRQeJExgOpkLC9MTjiYARTgxZRjQURqkGWBuToJ3V8bZdoHQf9x+afdryecXIzkzvm9c+ByRDtfahECw4Fnq2OJEZzdLI/RVx6HeVLNOVM9rrRBVHsUwTTYEqyL8ENtTD1pepRmfqoYLBtdNuYsTcZccgM3lJoRC+1aWhtQ/1xralS93/4f+QFzUP+B79hW3EMrJrAyds162jVqKavJXzQTFPtJyaURneQTPNphuDOtPjZlr6+N66g+4ECsb2vrYToE5x6XVspO8KhZV8V2Odn92p9NqmdfFsnRxHfUWwqRJoTuXBshJdalqVkVu/NHGrTWlUFuq5Wn621b4zxiTKc9NXJjbxFcN67VQNAEH3bf1d9TmSEX65rfbCdHcO8ATwg93B3J9cfbVvuaV25FzTYIUdOytRyueZpiXwOQU2In+2erklZvZ5zZgZWsEGbQFjiTYjjXzeyGvZGrcymuKZkb+tRG3n5flif550kjj7mQWi1T2ES70DC7jHxUam0lybV8UOpbHfHEU4jcHTp34lM84kgd6ZjrGjsR12fkyozcHDMPulo6bTuLpiQwDxmalRuaHbPJV9RHiS4Id9Vp9ijazPHtDWoFymmqYnDaC47sbYUrAUynVi0npTGdcG79ITQvX9aMkqcsVpPRsCkXmdmxtRDOqgJx1yx3LVtb2fnIBP/RP63lWq1qojNHad1uZi1SeUZt1PRRDKjGLnJug5xl1qm7M/Y5atUnlQAFajLsY4I4z2rsG8WZw6otXKR93eqEUoLKvvCI2l/vGQP3S8GuxJg/7VQuFKRy3p+tPuCG87ay1Ty8rIERbZ/a1VXzElxdFbIetTSbSCcmeJ4QvrhqACQ38m+boZqAzrYJ4fTUmhWtK8FmmfhZIU01QFPENNWSsPRtzBLwDCQMhDNq04CDc5BZeH+BvJGIX0HoClTrDpiBEgwOJeJlcDgMlhE0EMOCFHpFD6f5AhmTAwbBLR7EFHMCDku4XIkUluwpoa6xKINYQu0MMDKizwzoUGd8npGH23A7A1l0L9J1yA2kIEvox0cQhA0Twlch98w45BB3dK+QfURSwczhbiAdNgyAjxjzu9NgFveM2gMT1K54D1klXO7jhD5CoFsglMW/DClnwr1A8QVObZDGBEvM+uafc7BRgssnuF19NevZi1i1OcLynXmOadBKGXsBBtwBI+QWdkJU6Ntgee0k70Bu0+7MAAdkI6Qh7LvIxDJxWPgFc04CMBtAm9YjC8pC8SHmZNgN//3Pf8iGARodYxp84ZaCjxrx9P0rxtGD21I61jhiLDwKgMPNbeAaFWofm8+Ot7dX3P3xFeOoOnfhYRzxbma4vrlJg/DqhK0Tv7y+4tvd/XS8KhDVwS7Oz4Kjahyng94JPL+84u7xqSFX2PQyMe7Tp88xz4zfqlwVieefL3h8fgr6oXJZCbcnV3V9dYXLy6sIPkXRJDhMHNXDwwOef/6sygtjMMAMgxGwAb/99mvHX6EEqOQBHx8fcPfjHtIYSlZyXFWWjsOnzzh8/tQFRVWuKuZ8fHzE49Nj9hitU02frw6f8fniojtHtVAYcP/4iJ8vL9nIT4mxTZBfri/x+fw8kwKrgxXjJon7+we8jWPyTqjyK443mOH2yy3Oz8/jmOU5M9CGeuzx+w9AXjmp4LDiepphGAZc/+UXDOfn4eQtxzUYhgysLw/3eZ4YbIhxxpw36JWzAB8MMgV+Xzxdwd/QGY7kYxhm8lSFWwrysfA+yXm5gxxACy+mRXT2JkNJ6byFo3KvAnMjWKKwZ5aq/XvOM3eo+j1eRlaOq/iEauU0RcJ5paSualDlujIkTq1HKg5Ivi/5LhUKwjwyAgpHNWSpapW0LE5lyRO6e8zrkYlcBOWRoRSGJRM8z6vA7LIsUQj3semDvXMeHx2CYDZAPsYYS7rFQ8olk7tPjjJ3rHLf4Oi8KcfUoWSlivAmU2nhXJwyaEMOMyspph49Ui7ohNGhtBMDkWKrJG+Vb7YwHJjcZ9gaayUVmco9Kq2q48ygxSGL/XIY0j4y0NNSxgBkadMhC0Mtpab6W6UPqshuRuJimbMGZ5UTqg113wyrQ1ha5JEdfM+NrmcypiN6ko9V9hsH2HfB2OlN2EP/Pfu41X43vRLnfRI30FFud6da7xfLXFpAvVpQFps9oLY7KmGbEtnqfdX0O1sshvYeb4X00mJHyIT19LSVOtnOKVY1SpUEumNHu3V+Q9vctUDTzFDV6FtiLoAbyLM6eoCzHrgXPheK4EYD3AEs/0P4Se+CfmtIh47ehaDZPD35yG4XRUa1bn5tclA6HtBU75nUHt76f4BZddo5vsOmkSuYEZbUlNjQQepw1S6gr3OlrMBI30guMSs2KCHbXRics9ArfEBF86jU08qCuHSGPbVpBc3aioOcgWtHcSF/itPaC508Cn5uKMUjyGg2qYIrMKaOM+XZ5cK09WZaNtcFKR43/wcc7M/yjsQ6x7kWd7S5wUBdypjXR2ogbGkJmWsBt5Y0lB6UVbOhK91mewc4KabbR6Fmi8ccAlb/xNyiR0rVI74vTa7TRfyIP2wq7PjdBbuhQnumwh2oXbV+r+mEWjixsO0EXDO+BeQe9+BKt7POY+gDKf5459HOHNJOxXykE5ftc2pssy3guu11FWThZGCGbqsdG5lVXKGxoaIhW1+UulTLolD2C9DazgpOjb+0HquptqBtRMv90kb6gOY2KNyPm4U+niLbHRLa4MDIxcaH1Y0X2iZLl2vhYheH3jFUHcXn7YvgPX1VEyXfj6fsxdTvT9Cm40022PCv3cZDNsVC2L24jH0q62RhzKbsorbNIQEKZ6vxVGUT42xLi7hYvDjrf2cBwLXM2q1DareL2K/3dGJu+XChwj8ztmlOOc9a7LN7t9OgGRswI0afYHOHdz/1KAgnk090BZoVfEsgXjYGqll+piM54M3PRvJVOaS5/5fl5A5Tl1fEMOKk0EJWEze1hNuLOFT4uzRXaziutNG6HrOG77IJcjdacFxl7R5oJ1zgoKS8VH+qU6Dygh7G56HytsqfOcX7kHJiRUBlwc3GswWcDyNUuEkI/wV11p+yCZm1oQAAAABJRU5ErkJggg==') 0 0 repeat;
+      border: 1px solid #333;
+    }
+
+    #sens {
+      padding: 5px;
+      border: 1px solid #ccc;
+      min-width: 30px;
+      text-align: center;
+    }
+
+
+
+
+
+    .FF {
+      position: relative;
+      z-index: 1;
+      background: var(--ripple-background-color);
+      width: 90%;
+      margin: 0 auto 5px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    }
+
+
+    .InputElement {
+      color: var(--color4);
+      background-color: #f8e4e9 !important;
+      border-color: #9aecba;
+      padding: 6px 12px;
+      border-radius: 5px;
+      border: 2px solid #9682c8 !important;
+      border-collapse: collapse;
+      margin: 0px;
+    }
+
+    .slider2 {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 15px;
+      border-radius: 5px;
+      margin-top: 10px;
+      /*border-radius: 5%;*/
+      background: #525252 !important;
+      padding: 0px;
+      outline: none;
+      opacity: 0.9;
+      -webkit-transition: .2s;
+      transition: opacity .2s;
+    }
+
+    .slider2:hover {
+      opacity: 1;
+    }
+
+    .slider2::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: #4CAF50;
+      cursor: pointer;
+    }
+
+    .slider2::-moz-range-thumb {
+      width: 25px;
+      height: 25px;
+      background: #4CAF50;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="top-panel">
+    <!-- The user-provided top panel HTML -->
+    <div class="FF" id="f2">
+      <div class="slider" id="m1"></div>
+      <input type="range" min="1" max="200" value="10" class="slider2" id="myRange">
+      <div id="sens"> 22 </div>
+    </div>
+  </div>
+
+  <div class="bottom-panel">
+    <p style="background-color: #ff000051;font-size: 0.6rem;"> For legal reasons :YOU ARE DOING THIS AT YOUR OWN RISK.</p>
+    <p style="background-color: #00ff7751;font-size: 0.8rem;"><a href="https://www.paypal.com/ncp/payment/JZ25DFNPW8HRN" >Buy me a coffee</a></p>
+    <div class="tab">
+      <button class="tablinks" onclick="openTab(event, 'Tab1')" id="defaultOpen">M1</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab2')">M2</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab3')">M3</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab4')">M4</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab5')">M5</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab6')">M6</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab7')">M7</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab8')">M8</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab9')">M9</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab10')">M10</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab11')">M11</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab12')">M12</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab13')">M13</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab14')">M14</button>
+      <button class="tablinks" onclick="openTab(event, 'Tab15')">M15</button>
+    </div>
+
+
+
+
+
+
+
+
+
+    <div id="Tab1" class="tabcontent">
+      <h2>Módulo 1</h2>
+      <p>Bienvenido al curso de entrenamiento de &nbsp;<image-text>RippleNav</image-text>&nbsp;. Este curso le enseñará cómo usar la herramienta &nbsp;<image-text>RippleNav</image-text>&nbsp; para mejorar su vida de muchas maneras.</p>
+
+      <p><b>Antes de empezar:</b></p>
+      <p>
+        El viaje descrito en este sitio es un viaje avanzado. Presupone un cierto nivel de introspección personal y una curiosidad genuina sobre la naturaleza de la conciencia que va más allá del interés casual.
+      </p>
+      <p>Los mejores resultados los logran aquellos que pueden abordar los ejercicios con paciencia, sinceridad y una mente que está abierta a posibilidades que pueden desafiar las creencias convencionales. Esta exploración no se trata de debate, sino de descubrimiento personal.</p>
+      <p>Para el lector casual, lo que describimos aquí le parecerá imposible. La barra de arriba funciona con sus pensamientos. Se moverá hacia la derecha cuando piense en algo que tenga algo de energía adherida. Su uso principal es para la auto-consejería, encontrar cosas ocultas en la mente que le causan problemas en su vida. Por supuesto, si no comprende el significado del movimiento, simplemente le parecerá una tontería, pero vigile esa barra mientras piensa en varias cosas de su vida y véalo por sí mismo.</p>
+
+        <p><b>Aclaración del movimiento:</b></p>
+      <p>
+      El movimiento a la izquierda suele ser una 'no-confrontación' del tema en el que estaba pensando. Usted no quería lidiar con lo que fuera que fuese, así que va a la izquierda.
+      El movimiento a la izquierda es "alejarse de", el movimiento a la derecha es "acercarse a". Además, esto debería ser obvio, pero después de que se ha completado un movimiento a la derecha, necesitaría volver a neutral, lo que requiere un movimiento a la izquierda. Ese movimiento de retorno a la izquierda no tiene 'significado'.
+      </p>
+
+      <p>No es magia, utiliza conceptos descubiertos en la física cuántica, pero no entraremos en eso aquí en absoluto. Para aprender a usarlo de manera efectiva, necesitará comprender cómo funciona la mente y cómo cuestionar y buscar en la mente utilizando la herramienta de arriba que se llama &nbsp;<image-text>RippleNav</image-text>.
+      </p>
+
+
+
+ <p>Otra cosa útil que debe saber es que este sitio web es un sistema de una sola página, lo que significa que simplemente puede descargar <a href="https://github.com/rippleNav/ripplenav.github.io/blob/main/index.html" >index.html</a> a su dispositivo móvil y usarlo allí sin necesidad de acceso a internet.</p>
+
+      <p>La URL i-awesome.me no siempre estará ahí, así que mejor use https://ripplenav.github.io que nunca cambiará.
+      </p>
+
+      <p>Este sitio web, si bien presenta una herramienta científica interesante, tiene como objetivo principal mostrarle cómo usar esta herramienta para 'reparar' cosas en la mente.
+      </p>
+
+      <p>Aquí aprenderá a usar &nbsp;<image-text>RippleNav</image-text>&nbsp; para encontrar y eliminar bloqueos mentales ocultos en su mente.</p>
+
+      <p>Los Módulos 1-7 le enseñan los Métodos Centrales. Los Módulos 8-10 incluyen Ejercicios de Práctica, poniendo en acción lo que ha aprendido. En el Módulo 11, utilizará Técnicas de Resolución de Problemas contra sus desafíos personales. Del Módulo 12 en adelante contiene métodos de entrenamiento avanzados.</p>
+
+      <h2>Identificando Bloqueos Internos</h2>
+
+      <p>Es probable que sus objetivos impliquen mejorar su carrera, relaciones o crecimiento personal. Sin embargo, se enfrenta a Barreras Ocultas y Bloqueos Internos. A veces, es Sabotaje Emocional: la frustración o la vacilación que frenan su progreso.
+      </p>
+
+      <p>Muchas personas también luchan con Límites Autoimpuestos: un miedo a usar todo su potencial. Esta vacilación es Interferencia Mental.</p>
+
+      <p>En un nivel más profundo, la Depresión y la Ansiedad pueden provenir de Patrones Ocultos o Programas Subconscientes que se ejecutan en segundo plano. Estos programas de fondo plantan Semillas de Duda, voces internas que hacen que se rinda sin una razón lógica.
+      </p>
+
+      <p>
+        La depresión y la ansiedad son respuestas emocionales a algo en nuestro entorno. A veces la causa parece obvia. Las preocupaciones sobre la seguridad laboral pueden causar ansiedad. No alcanzar metas puede hacer que se sienta deprimido. Para algunas personas, no hay una causa clara para su depresión o ansiedad. Se siente como si alguna fuerza oculta estuviera trabajando.
+      </p>
+
+      <p>Las Heridas Emocionales Pasadas (trauma) son peligrosas. Cosas en su entorno seguro y presente pueden desencadenar Malas Reacciones de experiencias dolorosas pasadas. Su objetivo es Eliminar estas malas reacciones, dejando solo una conciencia clara y presente.</p>
+
+      <p>
+        El TEPT puede ser devastador para las personas que han experimentado un trauma. El problema es que situaciones seguras ahora pueden desencadenar emociones de situaciones inseguras del pasado. El escape de un auto puede hacer que alguien sienta que está de vuelta en un tiroteo. ¿Qué pasaría si esas emociones negativas pasadas pudieran eliminarse, dejando solo tranquilidad en su lugar?
+      </p>
+
+      <p>
+        Para explicar a qué nos referimos con 'desencadenante': "Ver las olas al atardecer" podría ser un desencadenante si alguien que amaba se ahogó. "Una mujer hermosa sonriéndole" podría ser un desencadenante si alguna vez engañó a su esposa. No conocemos la historia de vida de todos, por lo que cualquier cosa podría ser un desencadenante. Puede parecer una situación positiva, pero si causa emociones negativas para esa persona, lo consideramos un desencadenante.
+      </p>
+
+      <p>
+        Antes de ir al Módulo 2, déjeme decirle algo fuera de tema (un poco).
+        Un usuario veterano de este sitio web ha escrito un <a href="https://www.amazon.com.au/dp/B0FBQVQNQK">libro tipo thriller de espías</a> inspirado en RippleNav.
+        Les agradezco el apoyo mostrado.
+      </p>
+
+    </div>
+
+    <div id="Tab2" class="tabcontent">
+      <h2>Módulo 2</h2>
+
+      <h2>La Mente: Su Archivo de Información Personal
+      </h2>
+
+      <p>A medida que pasamos al siguiente paso de su entrenamiento, abordemos estas fuerzas ocultas que dan forma a su realidad. Para ganar en la vida, necesitamos entender una idea simple pero importante sobre cómo funciona su mente.</p>
+      <p>Nadie entiende completamente la mente, ni siquiera nuestros mejores expertos. Diferentes especialistas tienen sus propias ideas al respecto. Los médicos occidentales a menudo dicen que la mente está en el cerebro físico, mientras que los expertos espirituales la ven como energía o conciencia que va más allá de su cuerpo.</p>
+      <p>Para nuestros propósitos, no necesita elegir una teoría sobre dónde vive la mente. En cambio, usaremos un modelo simple que nos ayude a crear herramientas poderosas. Estas herramientas ayudarán a combatir la ansiedad, la depresión, la negatividad y otros problemas que le impiden alcanzar su máximo potencial y crear su mejor vida.</p>
+      <p>En nuestro modelo, la mente funciona como sus archivos de información personal, almacenando recuerdos y experiencias. El conocimiento es clave para navegar su vida en este mundo. El hecho de que pueda entender estas palabras es porque puede acceder a los recuerdos de cómo aprendió a leer y entender el idioma.</p>
+    </div>
+
+    <div id="Tab3" class="tabcontent">
+      <h2>Módulo 3</h2>
+      <h2>
+        El Flujo de lo Consciente y lo Inconsciente
+      </h2>
+
+      <p>
+        La biblioteca de su mente puede entenderse como si tuviera dos alas o cámaras distintas: la consciente y la inconsciente. Exploremos qué significan realmente estos términos para su paisaje interior.
+      </p>
+
+      <p>
+        Sus pensamientos conscientes son aquellos de los que es plenamente consciente y puede dirigir intencionalmente. Cuando siente que surge hambre en su cuerpo y decide conducir a un restaurante para alimentarse, está tomando una elección consciente. Si alguien le preguntara qué está haciendo, podría explicar fácilmente sus acciones y el razonamiento detrás de ellas. Está plenamente presente con estos pensamientos y decisiones, existen dentro de su conciencia.
+      </p>
+      <p>
+        Los pensamientos inconscientes, sin embargo, existen bajo la superficie de su conciencia, como las corrientes más profundas bajo las olas del océano. Imagine sentir de repente una ola de ira cuando ve algo tan simple e inocente como un tomate. Esta reacción no tiene sentido lógico para su mente consciente. No es consciente de ninguna razón racional para esta respuesta emocional, simplemente emerge de algún lugar más profundo dentro de usted.
+      </p>
+      <p>
+        El término "pensamientos inconscientes" no es del todo exacto, porque por definición, un pensamiento es algo de lo que somos conscientes, y no somos directamente conscientes de lo que sucede por debajo de nuestro nivel de conciencia. Este reino oculto a veces también se llama la mente subconsciente, donde "sub" indica maravillosamente que estos procesos ocurren por debajo de nuestra conciencia consciente.
+      </p>
+      <p>
+        Así que podemos ver que hay dos fuerzas principales que guían sus acciones y respuestas en cualquier momento dado:
+        <br>
+        (1) Primero, sus pensamientos conscientes, que son decisiones que toma en base a la información de la que es consciente y puede evaluar.
+        <br>
+        (2) Segundo, sus influencias inconscientes, que se manifiestan como reacciones, impulsos inexplicables, respuestas emocionales aparentemente irracionales, o decisiones que luego lo dejan preguntándose por qué las tomó.
+
+      </p>
+      <p>Sus pensamientos conscientes son elegidos conscientemente en base a lo que su conciencia reconoce como información útil o apropiada.
+      </p>
+
+      <P>Sus influencias inconscientes, sin embargo, emergen como reacciones, impulsos inexplicables de actuar de formas que podrían no tener sentido lógico, decisiones que lo confunden cuando reflexiona sobre ellas más tarde, o emociones que parecen surgir de la nada y sentirse fuera de su control.</P>
+
+      <p>
+        Comprender este flujo entre los reinos consciente e inconsciente es nuestro primer paso hacia un mejor entendimiento. En nuestro próximo módulo, comenzaremos a explorar cómo interactúan estos dos aspectos de su mente y cómo puede aportar una mayor armonía a su relación.
+      </p>
+      <p>
+        Tómese un momento para reflexionar sobre una reacción emocional reciente que le sorprendió. ¿Puede identificar si provino de un razonamiento consciente o de influencias inconscientes? Esta conciencia ya es el comienzo de su transformación.
+      </p>
+
+    </div>
+
+    <div id="Tab4" class="tabcontent">
+      <h2>Módulo 4</h2>
+
+      <h2>
+        La Red de Información Compartida
+      </h2>
+
+      <p>Estamos a punto de explorar algo fascinante: dónde almacena la mente su valiosa información. Esta es un área donde existen muchas teorías, y la gente puede tener opiniones firmes al respecto. Eso es normal: nuestra comprensión de la mente aún se está desarrollando.
+      </p>
+      <p>Podríamos sumergirnos en áreas complejas como las redes neuronales, la química cerebral o incluso la física cuántica, pero eso nos llevaría más allá de nuestros objetivos educativos actuales.
+      </p>
+
+      <p>Nuestra investigación de campo ha revelado algo importante: lo que llamamos "información subconsciente" puede no estar almacenada solo en nuestros sistemas cerebrales individuales, sino en una red compartida, un campo colectivo que conecta a todas las personas.
+      </p>
+      <p>Esto no significa que los recuerdos basados en el cerebro individual no existan: existen. Si tiene una condición médica que afecta la memoria, es probable que necesite apoyo médico tradicional. Los desafíos que estamos abordando parecen provenir de esta red compartida más profunda que influye en sus operaciones subconscientes.
+      </p>
+      <p>Compartimos esta perspectiva porque nuestro programa de mejora, que ha ayudado a miles de personas a transformar sus vidas, no puede explicarse completamente a través de los modelos estándar de almacenamiento de memoria individual. Continuaremos utilizando este modelo de red compartida porque explica los desafíos que discutimos anteriormente y nos brinda formas prácticas de superarlos.
+      </p>
+      <p>Puede que este concepto le resulte inusual al principio, pero recuerde, estamos trabajando con un modelo diseñado para resolver problemas reales que muchas personas enfrentan a diario.
+      </p>
+      <p>En nuestro modelo, los recuerdos existen en un campo colectivo, lo que significa que todos se mantienen en el mismo espacio. Permítame ofrecer una analogía de campo para ayudar a visualizar esto.
+      </p>
+
+      <p>Imagine un vasto sistema central de información, una red universal, donde en lugar de almacenar toda la información en nuestras mentes individuales, todo queda registrado en este campo infinito. Accedemos a estos archivos a través de coordenadas de tiempo y ubicación. Cuando sabe dónde estaba en un momento específico, puede reconectarse con lo que sucedió a través de este sistema colectivo.
+      </p>
+
+      <p>Sé que la idea de inteligencia compartida puede parecer extraña. Pero piense en ello como un modelo útil para una verdad más profunda: la memoria no es solo propiedad personal, es un mapa colectivo creado a partir de nuestra experiencia humana compartida.
+      </p>
+
+      <p>
+        Cuando trato de explicar las dimensiones superiores a las personas, me resulta útil comenzar dando un paso atrás, o más bien, un paso hacia abajo.
+      </p>
+      <p>
+        Imagine una hoja de papel sin absolutamente ningún grosor. Solo existe la anchura y la longitud en este mundo. Llamémoslo Planilandia, hogar de seres que solo experimentan dos dimensiones. Estos seres planos viven toda su vida sin saber que existen en un trozo de papel en nuestra realidad tridimensional. El concepto de "altura" les es tan extraño como... bueno, como podría serlo una cuarta dimensión para nosotros.
+      </p>
+      <p>
+        Ahora imagine qué sucede cuando una pelota de ping pong de nuestro mundo rueda suavemente sobre este papel. Los planilandianos no verían una pelota, solo percibirían el pequeño punto donde la esfera toca su plano. Quizás también notarían una sombra, un oscurecimiento de su mundo donde la pelota bloquea la luz desde arriba.
+      </p>
+      <p>
+        ¿Puede imaginar la confusión? Sus periódicos podrían informar sobre un punto misterioso que apareció sin explicación, y cómo la oscuridad cayó sobre parte de su mundo mientras el resto permanecía en la luz. Sus líderes no tendrían respuestas. En este vacío de comprensión, la gente crearía sus propias explicaciones, recurriendo a menudo a interpretaciones religiosas, sugiriendo que debe ser una intervención divina que requiere ofrendas, peregrinaciones y donaciones.
+      </p>
+      <p>
+        Si una científica en Planilandia propusiera la existencia de una tercera dimensión llamada "altura", ¿cómo la explicaría? Podría usar matemáticas para demostrar que debería existir en todas partes, no solo donde ocurrieron los extraños fenómenos. Pero dibujar o visualizar esta dimensión sería casi imposible dentro de su marco bidimensional. El sistema establecido podría sentirse amenazado por ideas tan radicales, lo que llevaría a conflictos, represión y posiblemente incluso el encarcelamiento de la científica que sugiere conceptos tan "heréticos".
+      </p>
+      <p>
+        Esta historia puede parecernos divertida a los seres tridimensionales. Entendemos la altura intuitivamente, es parte de nuestra experiencia diaria. ¿Pero tal vez estamos cometiendo el mismo error que los planilandianos cuando descartamos la posibilidad de dimensiones superiores?
+      </p>
+      <p>
+        Una cuarta dimensión seguiría el mismo principio: envolvería completamente nuestra realidad tridimensional mientras permanecería en gran medida invisible para nosotros. Los objetos de una cuarta dimensión podrían parecer aparecer y desaparecer mágicamente a medida que se cruzan con nuestro mundo, tal como el punto de contacto de la pelota de ping pong apareció como un punto para los planilandianos.
+      </p>
+      <p>
+        ¿Y qué hay de la quinta, sexta o incluso dimensiones superiores? Matemáticamente, deberían existir, aunque son cada vez más difíciles de conceptualizar para nuestras mentes tridimensionales. A lo largo de la historia, aquellos que han explorado tales conceptos a menudo han enfrentado resistencia, acusados de brujería, herejía o simplemente descartados como delirantes.
+      </p>
+
+      <p>
+        Hemos descubierto que la mente misma existe en una dimensión superior, un espacio compartido que trasciende nuestra realidad física. Esto podría sonar descabellado hasta que considera tecnologías como RippleNav, que responde a los pensamientos sin contacto físico, sin verse afectado por la distancia o las limitaciones convencionales del espacio y el tiempo.
+      </p>
+      <p>
+        En experimentos realizados entre continentes, con un circuito electrónico sensible al pensamiento, las respuestas del pensamiento llegaron instantáneamente, a pesar de los retrasos en la red que deberían haber creado un retardo notable. Esto sugiere que la respuesta se generó antes de que el pensamiento estuviera siquiera completamente formado, algo que parece imposible en nuestra comprensión lineal y tridimensional del tiempo. Pero si los pensamientos existen en una dimensión superior fuera del tiempo tal como lo conocemos, tales fenómenos se vuelven posibles. Desde esta perspectiva, el tiempo mismo puede ser simplemente una ilusión tridimensional.
+      </p>
+      <p>
+        El marco científico más cercano que tenemos para explicar estos fenómenos podría ser la mecánica cuántica, donde el efecto del observador demuestra que simplemente mirar un experimento puede influir en su resultado, algo que los físicos han estado tratando de entender desde principios del siglo XX.
+      </p>
+      <p>
+        Muchos expertos insisten en que todo el pensamiento ocurre dentro del cerebro, pero tal vez el cerebro sea simplemente una interfaz, un punto de conexión tridimensional con nuestro ser de dimensiones superiores. Esta perspectiva abre nuevas posibilidades para comprender y abordar lo que llamamos "enfermedad mental" en nuestro marco tridimensional.
+      </p>
+      <p>
+        Le invito a explorar estos conceptos con una mente y un corazón abiertos. El universo es mucho más misterioso e interconectado de lo que nos han enseñado a creer.
+
+      </p>
+
+      <p>Permítame compartir una forma más poética de imaginar este concepto.
+
+      </p>
+
+      <p>Imagine que debajo de todos nosotros yace un vasto lago, su superficie tan lisa y reflectante como el espejo más claro. Y nosotros, como seres conscientes, poseemos la habilidad milagrosa de caminar sobre estas aguas. Aunque esto pueda parecer imposible para nuestras mentes lógicas, abracemos esta visión y exploremos lo que revela.
+      </p>
+      <p>A medida que nos movemos a través de este lago místico, cada uno de nuestros pasos crea ondas que se expanden hacia afuera desde el punto exacto donde nuestro pie toca el agua. Note que estas ondas comienzan en el momento preciso del contacto, ni antes ni después, marcando cada momento perfectamente en el tiempo.
+      </p>
+      <p>No estamos solos en esta extraordinaria experiencia. Innumerables otros también viajan a través de estas aguas, sus pasos también crean ondas que se extienden hacia afuera hasta que se desvanecen gradualmente. Donde estas innumerables ondas se encuentran y se cruzan, crean intrincados patrones de interferencia que bailan a través de la superficie reflectante del lago.
+      </p>
+
+      <p>
+        Si fuéramos a capturar imágenes de este lago a intervalos regulares, documentaríamos sus interminables transformaciones. Para revelar lo que sucedió en un momento y lugar en particular, simplemente necesitaríamos mirar la fotografía de ese momento y observar el patrón único de ondas presente allí.
+      </p>
+      <p>Así que ya ve, la ubicación y el tiempo se convierten en las llaves que abren nuestro acceso a la memoria. Como ondas en un lago cósmico, cada evento envía olas a través del universo, alterando para siempre su delicada superficie de maneras que luego pueden ser reconocidas y comprendidas.
+      </p>
+
+      <p>
+        Fue esta hermosa analogía la que nos inspiró a nombrar nuestra herramienta de curación &nbsp;<image-text>RippleNav</image-text>&nbsp;, porque nos ayuda a navegar a través de las ondas en el lago de la conciencia, permitiéndonos encontrar y eliminar los patrones que ya no sirven a nuestro mayor bien.
+      </p>
+      <p>
+        En nuestro próximo módulo, comenzaremos a explorar cómo estas ondas de memoria influyen en nuestra experiencia presente, y cómo podemos trabajar con ellas para crear una transformación positiva en nuestras vidas.
+      </p>
+      <p>
+        Tómese un momento para sentarse con esta imagen del lago de la conciencia. ¿Puede sentir cómo todos estamos conectados a través de estas aguas? ¿Cómo sus ondas podrían tocar a otros de maneras que nunca imaginó?
+      </p>
+    </div>
+
+    <div id="Tab5" class="tabcontent">
+      <h2>Módulo 5</h2>
+
+        <h2>
+          La Importancia Oculta del Tiempo y la Ubicación
+        </h2>
+        <p>
+          Lo siguiente puede parecer obvio pero es muy importante: cómo el tiempo y la ubicación afectan su conciencia y crean los patrones ocultos que desvían sus acciones.
+        </p>
+
+        <p>
+          Desde la perspectiva de la mente, experimentamos la plena conciencia cuando tenemos completa conciencia de nuestro tiempo y ubicación exactos. Piense en lo conectado que se siente cuando está completamente presente, consciente de exactamente dónde está y cuándo es. Pero a medida que comenzamos a perder el rastro de estas coordenadas, tal vez cuando nos quedamos dormidos, soñamos despiertos o experimentamos un shock, nos dirigimos hacia la inconsciencia. La inconsciencia completa ocurre cuando no tenemos ninguna conciencia del tiempo o lugar.
+        </p>
+
+        <p>
+          ¿Cómo podría esto crear desafíos en su vida? Permítame compartir un ejemplo esclarecedor. </p>
+        <p>
+          Imagine que usted y otra persona experimentan un accidente juntos, tal vez un accidente automovilístico menor. En ese momento de shock y miedo, ambos caen en un estado de inconsciencia parcial. Incluso en este estado alterado, sus mentes continúan registrando todo, los sonidos, las sensaciones, las emociones, pero la claridad en torno al tiempo y la ubicación se vuelve borrosa o desaparece por completo.
+        </p>
+        <p>
+          Todas las emociones complejas, el miedo, el dolor, el shock y la confusión, se registran con perfecta precisión, pero no hay una separación clara entre su experiencia y la de su amigo. Sus mentes perciben como si estuvieran ocupando exactamente el mismo tiempo y espacio, aunque físicamente estaban a unos metros de distancia. La distinción entre qué recuerdos pertenecen a quién se mezcla.
+        </p>
+        <p>
+          Tenga en cuenta que nos referimos a recuerdos subconscientes, no a recuerdos conscientes. No creerá repentinamente que es su amigo, pero podría mostrar comportamientos, reacciones o respuestas emocionales que en realidad se originaron con ellos.
+        </p>
+
+        <p>
+          Esto crea un profundo efecto dominó porque nuestra mente subconsciente contiene un mecanismo de supervivencia que nos advierte del peligro potencial en base a nuestras experiencias pasadas. Cuando nos encontramos con una situación peligrosa en el presente, se desencadenan recuerdos subconscientes de experiencias pasadas similares, INCLUSO AQUELLOS OBTENIDOS MUY ABAJO EN SU LÍNEA GENÉTICA. Cuando de repente ve una serpiente en un sendero o se encuentra con un oso en el bosque, su cuerpo responde al instante, los músculos se tensan, la adrenalina fluye, el miedo aumenta en su interior y está preparado para responder por su seguridad.
+        </p>
+        <p>
+          Estas no son decisiones reflexivas, son reacciones instantáneas. Mientras que su mente consciente se involucra en una contemplación reflexiva, su mente subconsciente simplemente libera patrones emocionales almacenados del pasado sin evaluar si esas emociones son verdaderamente relevantes para su circunstancia actual.
+        </p>
+
+        <hr>
+        <p>
+          Volviendo a nuestro ejemplo con el accidente automovilístico, años más tarde, podría encontrarse caminando por una calle cuando un automóvil hace un ruido de escape fuerte cerca. Ese sonido repentino hace que su mente acceda a sus recuerdos inconscientes y a los de su amigo de ese evento traumático anterior, preparándolo para responder como si estuviera en peligro nuevamente. Es importante entender que solo los recuerdos inconscientes se mezclan de esta manera, no sus recuerdos conscientes. No creerá repentinamente que es su amigo, pero podría mostrar comportamientos, reacciones o respuestas emocionales que en realidad se originaron en él.
+
+        </p>
+        <p>
+          Veamos más de cerca por qué sucede esto. Durante el evento traumático, su conciencia del tiempo y la ubicación se volvió confusa o desapareció por completo, pero mantuvo un sentido general previo a la inconsciencia de dónde estaba. Cuando algo en el presente desencadena un recuerdo de ese evento, su mente busca automáticamente recuerdos de esa ubicación y período de tiempo vagos.
+
+        <p>
+          Debido a que su amigo estaba cerca durante el incidente original, sus patrones emocionales inconscientes también se reúnen y se le presentan como si fueran los suyos propios. Así es como puede encontrarse experimentando respuestas emocionales que en realidad no se originan en su propia historia de vida. La conciencia colectiva simplemente proporciona todos los datos <b>cercanos</b> sin distinguir entre las fuentes. La nebulosidad de la ubicación evita que la conciencia colectiva obtenga la ubicación precisa de la memoria de dónde estaba usted en ese momento.
+
+        </p>
+
+        <hr>
+
+        <p>
+          La nebulosidad del tiempo y la ubicación durante los momentos de trauma actúa como una "fusión de recuerdos" para las mentes inconscientes involucradas en el incidente. Es importante tener en cuenta que no toda experiencia crea este fenómeno, ocurre específicamente durante lo que llamamos una Experiencia Traumática Unificadora, o UTE (por sus siglas en inglés).
+        </p>
+        <p>
+          Estas experiencias traumáticas evocan emociones complejas e intensas, miedo, ira, pánico, confusión. Cuando está en modo de supervivencia, experimentando dolor intenso o sintiéndose al borde de la muerte, es poco probable que mantenga una conciencia tranquila. Todas esas emociones poderosas quedan registradas en la conciencia colectiva, esperando resurgir cuando su atención subconsciente regrese a esa experiencia fusionada.
+        </p>
+        <p>Podría imaginar una "fusión de recuerdos" como una nube brumosa que lo conecta a usted y a la otra persona en el accidente automovilístico, vinculándolos inconscientemente.</p>
+
+        <hr>
+        <p>
+          Estas "fusiones de recuerdos", de las cuales cada uno de nosotros tiene muchas, nos conectan energéticamente con innumerables otras personas que llevan cada una su propia constelación de patrones emocionales, y se convierten en las influencias ocultas detrás de muchos de nuestros desafíos. Su ira inexplicable, miedos aparentemente irracionales o patrones de comportamiento recurrentes pueden originarse a partir de estas fuentes fusionadas. Estos individuos no son conscientemente conscientes de esta conexión energética. No comparten intencionalmente sus patrones emocionales con usted, ni se dan cuenta de que usted también podría ser una fuente de influencia en sus vidas.
+
+        </p>
+
+        <hr>
+
+        <p>Puede que esté pensando de manera escéptica sobre este concepto en este momento, preguntándose si es posible que sea cierto. O tal vez crea que no se aplica a usted porque no ha experimentado ningún trauma significativo que pueda recordar. Pero recuerde lo que aprendimos en el Módulo 4 sobre nuestro modelo de conciencia colectiva, este campo es atemporal, existiendo desde el principio mismo, acumulando las ondas de sus acciones desde su primera experiencia.
+        </p>
+        <p>
+          No estamos sugiriendo ninguna perspectiva religiosa particular aquí. Cualesquiera que sean sus creencias espirituales, cuando comience a buscar estas Experiencias Traumáticas Unificadoras en su propia vida, descubrirá que ya lleva muchas de ellas. La mente colectiva opera independientemente de sus opiniones o sistemas de creencias. Nuestro propósito es simplemente ayudarle a entender qué son estas experiencias, cómo afectan su vida diaria y, lo más importante, cómo eliminar permanentemente su influencia.
+        </p>
+
+        <hr>
+
+        <p>
+          En los próximos módulos, a menudo nos referiremos a la "fusión" (merge) y a la "fuente" (source) como formas sencillas de encapsular estos conceptos. El incidente de fusión lo conecta a una fuente de influencia. Para liberarnos de los efectos de estas fuentes, necesitamos localizar y sanar estos incidentes de fusión.
+        </p>
+
+        <p><span class="amberBack">
+            Para resumir lo que hemos explorado hoy: una Experiencia Traumática Unificadora hace que la información de tiempo y ubicación que rodea a ese incidente se confunda, creando una 'fusión' que lo conecta energéticamente a muchas 'fuentes' de patrones psicológicos que pueden no originarse con usted.</span></p>
+        <p>
+          En nuestro próximo módulo, comenzaremos a aprender técnicas prácticas para identificar estas fusiones y eliminar su influencia en su vida. La conciencia que está ganando en este momento ya es el comienzo de su transformación.
+
+        </p>
+        <p>
+          Tómese un momento para reflexionar sobre esta información con un corazón abierto. Note si alguna experiencia en su propia vida podría conectarse con lo que hemos discutido hoy. Recuerde, la conciencia es el primer paso hacia el cambio.
+
+        </p>
+    </div>
+
+
+
+    <div id="Tab6" class="tabcontent">
+      <h2>Módulo 6</h2>
+      <h2>
+        Encontrando Su Código de Desbloqueo Personal o 'número mágico'
+      </h2>
+
+
+
+      <p>En nuestra sesión informativa anterior, exploramos "El Problema del Tiempo y la Ubicación", cómo durante los momentos de estrés o emoción intensa, su sistema neuronal puede mezclar sus recuerdos con los de otros que compartieron ese espacio con usted. Estas señales mixtas continúan afectando sus respuestas emocionales, comportamientos e incluso su identidad.</p>
+      <p>Me complace informar que hay una forma sencilla de desenredar estas señales mixtas y restaurar su verdadero estado emocional. El proceso tiene dos pasos clave: encontrar el evento específico que creó la mezcla y descubrir exactamente cuántas personas estuvieron involucradas en esa experiencia compartida.</p>
+      <p>Cuando encuentra el número exacto de personas que estuvieron presentes durante ese evento, sucede algo poderoso. Su mente reconoce este número como la verdad y como una llave que desbloquea los recuerdos mezclados, permitiéndoles separarse y regresar a sus dueños apropiados. El alivio de este simple descubrimiento puede sentirse casi inmediato, razón por la cual llamamos a esto el "número mágico".</p>
+
+      <p>Piense en ello como un código que, cuando se introduce, permite a su subconsciente reorganizar su comprensión de las experiencias pasadas, liberándolo de llevar patrones emocionales que no le pertenecen auténticamente. Este es un paso crucial en su viaje hacia la recuperación de su verdadero yo.</p>
+
+      <p>Para ser claros, no hay nada de alta tecnología o sobrenatural sucediendo aquí, aunque los resultados puedan parecer notables. El término "número mágico" simplemente significa el conteo exacto de personas cuyos datos subconscientes se mezclaron con los suyos durante una Experiencia Traumática Unificadora.</p>
+
+      <hr>
+      <p>Para ayudarle a navegar en esta operación de campo de autodescubrimiento, hemos desarrollado una herramienta especializada llamada &nbsp;<image-text>RippleNav</image-text>.
+        Esta herramienta está diseñada para interactuar con la red de inteligencia colectiva y ayudarle a navegar a través de los complejos patrones de señales que discutimos en módulos anteriores.</p>
+      <p>En próximas sesiones informativas, a menudo nos referiremos a estos "números mágicos" como una forma directa de expresar este poderoso concepto de información numérica que separa experiencias mezcladas.</p>
+      <p>Sin embargo, debo informarle que necesitará comprometerse a trabajar durante este proceso de recuperación.</p>
+      <p>Primero, identificar la Experiencia Traumática Unificadora específica donde ocurrió la mezcla puede ser un desafío si no está bien entrenado en el uso de la herramienta &nbsp;<image-text>RippleNav</image-text>.</p>
+      <p>Segundo, acceder a recuerdos subconscientes que han sido almacenados profundamente en su mente requerirá asistencia especial a través de &nbsp;<image-text>RippleNav</image-text>. Es un dispositivo de campo esencial con el que debe volverse competente.</p>
+
+
+
+
+      <hr>
+      <p>
+        Desde un punto de vista más espiritual, podemos entender estas fusiones como enredos energéticos entre personas que han compartido experiencias profundas. Así como las partículas cuánticas pueden enredarse a través de vastas distancias, la conciencia humana puede formar conexiones que trascienden nuestra comprensión ordinaria de separación.
+      </p>
+      <p>
+        Encontrar su número mágico es esencialmente un proceso de desenredo cuántico, permitiendo que la experiencia de cada persona regrese a su legítimo dueño, liberando a todos los involucrados de llevar patrones emocionales que auténticamente no les pertenecen.
+      </p>
+
+      <hr>
+      <p>
+        Se estará preguntando cómo se sentirá este proceso cuando lo experimente. Muchas personas describen una sensación de ligereza, como si se hubiera levantado un peso que ni siquiera sabían que llevaban. Otros reportan una claridad repentina sobre patrones en sus vidas que antes parecían inexplicables. Algunos experimentan alivio inmediato de síntomas emocionales o incluso físicos que habían persistido durante años.
+      </p>
+      <p>
+        La belleza de este proceso radica en su simplicidad. Una vez que se reconoce el número mágico, la mente naturalmente reorganiza su comprensión de las experiencias pasadas sin requerir un análisis o procesamiento extenso. Es como si todo lo que necesitara fuera esta única pieza de información para completar un proceso de sanación que siempre supo cómo realizar.
+      </p>
+
+
+      <hr>
+      <p>
+        En nuestro próximo módulo, exploraremos la herramienta &nbsp;<image-text>RippleNav</image-text>&nbsp; en mayor detalle, aprendiendo a usarla eficazmente para descubrir sus números mágicos y comenzar a liberar estas experiencias fusionadas de su campo de energía.
+      </p>
+      <p>
+        Recuerde que este viaje es singularmente suyo. Mientras estoy aquí para guiarle a través del proceso, los descubrimientos que haga serán profundamente personales y profundamente transformadores. Cada número mágico que descubra es un paso más para reclamar su verdad auténtica y liberarse de influencias que nunca le pertenecieron verdaderamente.
+      </p>
+      <p>
+        Tómese un momento ahora para asimilar el concepto que hemos explorado hoy. Quizás pueda traer a su mente una situación en la que experimentó una reacción emocional que se sintió desproporcionada o de alguna manera no del todo suya. Esta conciencia ya le está preparando para el trabajo de sanación que vendrá.
+      </p>
+
+
+
+      <hr>
+
+
+
+
+
+
+
+
+      <p>
+        En los próximos módulos, a menudo nos referiremos a "números mágicos" como una forma sencilla de encapsular este concepto.
+
+      </p>
+
+
+
+
+
+      <p>
+        Hay dos dificultades en cuanto a la localización de números mágicos: <br>
+      <ol>
+        <li>Localizar el incidente específico donde ocurrió la fusión.</li>
+        <li>Acceder a recuerdos subconscientes que están enterrados en lo profundo.</li>
+      </ol>
+      <br>
+
+      <p>
+        Necesitará ayuda en la forma de una herramienta especial que pueda interactuar con el subconsciente colectivo y navegar alrededor de todas esas ondas. Discutiremos esta herramienta en la siguiente sección.
+      </p>
+
+      <br><br><br>
+    </div>
+
+    <div id="Tab7" class="tabcontent">
+      <h2>Módulo 7</h2>
+
+
+      <h2>El Arte de Encontrar Su Verdad</h2><br><br>
+
+
+      <p>
+        Estoy emocionado de compartir este proceso con usted porque es tanto profundamente simple como increíblemente poderoso. Si bien el concepto puede parecer complejo al principio, le prometo que una vez que lo entienda, se sorprenderá de lo intuitivo que se vuelve.
+      </p>
+      <p>
+        Comencemos con un ejemplo familiar que nos ayudará a entender el proceso.
+      </p>
+      <p>
+        Imagine que está jugando un simple juego de adivinanzas con otra persona. Han elegido un número secreto entre 1 y 100, y usted quiere encontrarlo lo más rápido posible. Ahora, podría comenzar a adivinar números al azar, 17, 42, 83, pero eso podría tomar mucho tiempo.
+      </p>
+      <p>
+        En cambio, hay un enfoque mucho más elegante. Permítame mostrarle cómo funciona:
+      </p>
+
+      <p>
+      <ol>
+        <li>Usted comienza preguntando: "¿Tu número es mayor que 50?"</li>
+        <li>Si dicen "Sí", usted sabe de inmediato que el número está en algún lugar entre 51 y 100, y ha eliminado la mitad de todas las posibilidades con solo una pregunta.
+        </li>
+        <li>Luego, pregunta: "¿Tu número es mayor que 75?"
+        </li>
+        <li>Si dicen "Sí", ahora sabe que el número está entre 76 y 100, y lo ha acotado aún más.
+        </li>
+        <li>Continúa esta danza de preguntas, "¿Es mayor que 87?", cada vez dividiendo el rango restante por la mitad hasta que se concentra en el número exacto.</li>
+      </ol>
+      </p>
+      <p>
+        Ahora, conectemos esto con su objetivo de ser una persona increíble. Los números mágicos que discutimos en nuestro módulo anterior, esos recuentos precisos de personas involucradas en Experiencias Traumáticas Unificadoras, se pueden descubrir utilizando este mismo enfoque a través de nuestra herramienta especializada llamada &nbsp;<image-text>RippleNav</image-text>&nbsp;.
+
+
+      </p>
+      <p>
+        Piense en &nbsp;<image-text>RippleNav</image-text>&nbsp; como una brújula para navegar por el vasto océano de la conciencia colectiva. Así como una brújula responde al campo magnético de la Tierra con movimientos suaves, &nbsp;<image-text>RippleNav</image-text>&nbsp; responde al campo cuántico de la conciencia con movimientos sutiles que nos guían hacia nuestros números mágicos.
+
+
+      </p>
+
+      <h>
+        <p>
+          Al usar &nbsp;<image-text>RippleNav</image-text>&nbsp;, buscará un movimiento sutil y breve hacia la derecha, un movimiento suave que confirma que está en el camino correcto. Este movimiento podría ser muy leve o más pronunciado, pero con la práctica, se sintonizará para reconocerlo.
+        </p>
+        <br><br>
+        <p>
+          Permítame guiarle a través de cómo funciona esto en términos prácticos:
+        </p>
+        <p>
+          Imagine que estamos buscando un número mágico que podría estar en cualquier lugar entre 1 y 100. Comenzamos preguntando (en pensamiento): "¿Es el número mágico mayor que 50?" y observamos &nbsp;<image-text>RippleNav</image-text>&nbsp;.
+        </p>
+        <p>
+          Si vemos ese suave movimiento hacia la derecha, sabemos que nuestro número está en la mitad superior, entre 51 y 100.
+        </p>
+        <p>
+          Luego dividimos ese rango por la mitad y preguntamos: "¿Es el número mágico mayor que 75?"
+        </p>
+        <p>
+          Si no hay movimiento esta vez, sabemos que nuestro número está entre 51 y 75.
+        </p>
+        <p>
+          Continuamos esta danza, haciendo preguntas y observando las respuestas, cada vez reduciendo el campo hasta que llegamos al número preciso que representa nuestra verdad.
+        </p>
+        <p>
+          Permítame advertirle. Solo nos interesan los movimientos breves a la derecha <span style="color:rgb(241, 185, 29);background-color: #464646;">en respuesta a una pregunta que propusimos en pensamiento</span>. Los movimientos que ocurren dos segundos después de plantear la pregunta no son relevantes y deben ignorarse.
+        </p>
+
+
+        <hr>
+
+        <p>
+          Permítame ofrecerle una forma más de entender esto. Imagine que está parado en una habitación vasta y oscura, sosteniendo una luz especial que ilumina solo la mitad de la habitación a la vez. Está buscando una gema pequeña y preciosa.
+        </p>
+        <p>
+          Brilla su luz en la mitad derecha de la habitación y pregunta: "¿Está mi gema en esta luz?" &nbsp;<image-text>RippleNav</image-text>&nbsp; le da una señal suave de que sí, lo está. Ahora sabe que puede concentrarse por completo en esa mitad de la habitación.
+        </p>
+        <p>
+          Divide esa sección iluminada por la mitad nuevamente y brilla su luz en la esquina más alejada. Nuevamente, pregunta y recibe confirmación. Con cada pregunta, su área de búsqueda se vuelve más pequeña, y se acerca más a encontrar su gema, su número mágico.
+        </p>
+
+
+        <hr>
+
+
+        <p>
+          &nbsp;<image-text>RippleNav</image-text>&nbsp; opera a través de principios de la mecánica cuántica, el mismo campo fascinante de la física que revela cómo las partículas pueden estar interconectadas a través de vastas distancias. La mecánica más profunda de cómo funciona está más allá de lo que necesitamos entender para usarlo de manera efectiva, al igual que no necesita entender cómo un teléfono inteligente procesa la información para hacer una llamada.
+        </p>
+        <p>
+          Con la práctica, este proceso se vuelve natural. La mayoría de las personas pueden localizar un número mágico en menos de 30 segundos una vez que han desarrollado una sensibilidad para &nbsp;<image-text>RippleNav</image-text>&nbsp;. Es como aprender a andar en bicicleta, puede parecer un desafío al principio, pero una vez que lo capta, se vuelve fácil.
+        </p>
+        <p>
+          Recuerde que cuando esté trabajando con el &nbsp;<image-text>RippleNav</image-text>&nbsp; real, necesitará mantener un estado mental claro y enfocado. Su bienestar físico también juega un papel importante; una nutrición adecuada, particularmente niveles adecuados de vitamina B, ayuda a mantener las conexiones neuronales que le permiten percibir las respuestas sutiles de &nbsp;<image-text>RippleNav</image-text>&nbsp;.
+        </p>
+
+
+
+
+
+
+
+
+
+
+
+
+        <br><br>
+        <hr>
+        <br><br>
+
+        <p>
+          Le animo a que practique encontrando algunos números, como cuántas hojas hay en un árbol cercano. En realidad, no iremos a contarlas. La idea es solo practicar sus habilidades con RippleNav en algo sin sentido hasta que se sienta cómodo con él. Esta práctica es invaluable porque encontrar sus números mágicos es el corazón de todo este viaje de sanación.
+        </p>
+        <p>
+          &nbsp;<image-text>RippleNav</image-text>&nbsp; es como cualquier herramienta, requiere práctica, paciencia y presencia para usarse de manera efectiva. Pero le prometo que las recompensas de dominarlo son profundas. Cada número mágico que descubre es una llave que desbloquea una pieza de su yo auténtico, liberándolo de patrones fusionados que han influido en su vida de maneras que tal vez nunca se haya dado cuenta.
+        </p>
+        <p>
+          Tómese un tiempo ahora para practicar tanto como pueda. Y sepa que cada sesión de práctica lo está preparando para el verdadero trabajo de sanación que está por venir.
+        </p>
+        <br><br>
+        <hr>
+
+
+
+    </div>
+
+    <div id="Tab8" class="tabcontent">
+      <h2>Módulo 8</h2>
+
+
+
+      <h2>Trabajando Con lo Infinito</h2>
+
+      <p>
+        En esta lección, estamos expandiendo nuestra conciencia para abrazar algo verdaderamente magnífico, la inmensidad de los números mágicos que podemos encontrar en nuestro viaje de sanación.
+      </p>
+      <p>
+        Como hemos estado explorando cómo usar &nbsp;<image-text>RippleNav</image-text>&nbsp; para descubrir los números mágicos en nuestra conciencia colectiva, nos hemos centrado principalmente en números más pequeños. Pero quiero prepararle para el espectro completo de lo que podría descubrir.
+      </p>
+
+      <p>
+        Al usar &nbsp;<image-text>RippleNav</image-text>&nbsp; para revelar números en la mente inconsciente, encontrará que abarcan un rango increíble. Alrededor del 70% de los números mágicos que encontrará caerán en algún lugar entre 1.000 y 30.000, números que podemos comprender fácilmente.
+      </p>
+
+
+      <p>
+        Pero el 30% restante podría llevarnos a reinos de magnitud que estiran nuestra imaginación. Y aquí es donde nuestro viaje se vuelve aún más fascinante.
+      </p>
+
+
+      <hr>
+
+
+      <ol>
+        <li>sin escala</li>
+        <li>Cien</li>
+        <li>Mil</li>
+        <li>Millón</li>
+        <li>Billón</li>
+        <li>Trillón</li>
+        <li>Cuatrillón</li>
+        <li>Quintillón</li>
+      </ol>
+      <p>Para navegar estos vastos paisajes numéricos, ayuda comprender cómo nombramos diferentes escalas de números. Puede recordar algunos de estos de sus días de escuela, pero refresquemos nuestra comprensión juntos:
+      </p>
+
+      <p>Comenzamos con números sin un nombre de escala específico, las unidades, decenas, etc. Luego tenemos cientos. Luego vienen los miles. Más allá de eso están los millones. Luego los billones. Seguido por los trillones. Luego los cuatrillones. Y quintillones.
+      </p>
+      <p>
+        Cada una de estas escalas representa una inmensidad diez veces mayor que la anterior. Es como mirar el cielo nocturno y ver no solo las estrellas visibles a simple vista, sino luego usar un telescopio para revelar miles más, y luego aprender sobre los miles de millones de galaxias más allá de lo que incluso nuestros telescopios más fuertes pueden ver.
+      </p>
+      <p>
+        Ahora, no se preocupe, no necesitará realizar cálculos complejos u operaciones matemáticas. Simplemente necesita poder contar y comprender qué números son más grandes y cuáles son más pequeños en esta escala cósmica.
+      </p>
+      <p>
+        Entiendo que los números grandes pueden resultar abrumadores. Si le preguntara si 5.678.996.433.243 es mayor que 5.778.986.433.243, podría sentir que su mente nada con todos esos dígitos. Pero si le preguntara si 5,6 trillones es mayor que 5,7 trillones, podría responder de inmediato.
+      </p>
+      <p>
+        Esta es la belleza de agrupar números en estas escalas más manejables, nos permite comparar valores de forma más intuitiva. Comprender estas escalas de nombres le ayuda a reconocer que los trillones son mayores que los billones, los billones son mayores que los millones, y así sucesivamente.
+      </p>
+      <p>
+        Esto puede parecer obvio, pero es crucial para encontrar el número mágico <image-text>correcto</image-text>. Recuerde, no liberaremos nada en la mente a menos que descubramos el auténtico número mágico. Con práctica y paciencia, se sentirá más cómodo trabajando y comparando estos valores más grandes.
+      </p>
+
+
+      <hr>
+
+
+
+
+
+      <h2>¿Pero qué hay de los números verdaderamente inmensos?</h2>
+
+      <p>¿Aquellos que se extienden más allá de los cuatrillones o quintillones? Cuando los números alcanzan esta magnitud, utilizamos otro enfoque que es maravillosamente simple: contamos los dígitos en lugar de intentar identificar el número completo.
+      </p>
+      <p>
+        Por ejemplo, el número "un millón" tiene siete dígitos: 1.000.000. Esos son siete lugares desde el primer 1 hasta el último 0.
+      </p>
+
+      <hr>
+
+      <p>Algunos de los números mágicos más grandes que hemos encontrado en nuestro trabajo contienen alrededor de 800 mil millones de dígitos. Trate de imaginar eso por un momento, no un número que es 800 mil millones, sino un número que tiene 800 mil millones de dígitos. Es una inmensidad que trasciende nuestra comprensión típica.</p>
+
+      <p>En esos casos, aproximar el número de dígitos fue suficiente para liberar los recuerdos inconscientes fusionados de la mente. El reconocimiento consciente de esta inmensidad fue suficiente para permitir que emergiera la verdad.
+      </p>
+
+      <p>Esto nos lleva a una idea importante: no siempre necesita identificar el número exacto hasta el último dígito. Acercarse a 23.000 podría funcionar tan eficazmente como identificar los 23.451 completos. Esta comprensión puede acelerar en gran medida su proceso de sanación.
+      </p>
+
+      <hr>
+
+
+      <p>
+        Recuerde, el propósito de encontrar un número mágico es que la mente reconozca su verdad. A veces necesitará el valor exacto, mientras que otras veces una aproximación será suficiente para descubrir el patrón auténtico. Confíe en su intuición y en &nbsp;<image-text>RippleNav</image-text>&nbsp; para que le guíen hacia lo que funciona en cada situación única.
+      </p>
+      <p>
+        Igualmente importante es abordar estos números sin juzgar. No descarte un número porque 800 mil millones de dígitos parece inverosímil o porque no se alinea con lo que cree que "debería" ser cierto. La mente opera de acuerdo con su propia sabiduría innata, no de acuerdo con nuestras expectativas o preconcepciones.
+      </p>
+      <p>
+        Piénselo de esta manera: si tuviera que contar cada grano de arena en todas las playas de la Tierra, alcanzaría un número inimaginablemente grande. Si intentara contar cada estrella en nuestra galaxia, alcanzaría otra vasta suma. La capacidad de complejidad de la mente rivaliza con estas escalas cósmicas.
+      </p>
+      <p>
+        Cuando trabajamos con números muy grandes, estamos reconociendo que los patrones en nuestra conciencia pueden ser tan intrincados y vastos como el universo mismo. Al igual que los astrónomos utilizan diferentes herramientas para medir distancias cósmicas, a veces en años luz, a veces en parsecs, adaptamos nuestro enfoque en función de la escala con la que estamos trabajando.
+      </p>
+      <p>
+        Permítame compartir otra perspectiva que podría ayudar. Piense en su conciencia como un árbol vasto y antiguo con raíces que se extienden profundamente en la tierra y ramas que se acercan al cielo. Algunos recuerdos fusionados podrían ser como hojas en las ramas más cercanas, fácilmente identificables y liberables con números específicos más pequeños. Otros podrían ser como patrones dentro de las raíces más profundas, que requieren que reconozcamos su inmensidad en lugar de tratar de contar cada fibra de la raíz.
+      </p>
+      <p>
+        A medida que continúa su práctica con &nbsp;<image-text>RippleNav</image-text>&nbsp;, aborde estos números más grandes con la misma curiosidad paciente que aportaría al explorar un nuevo paisaje. No deje que su magnitud lo intimide. En su lugar, reconozca que su conciencia ha estado recopilando experiencias a través de un vasto espectro, y la sanación que estamos haciendo honra ese rango completo.
+      </p>
+      <p>
+        Recuerde que este viaje no se trata de la perfección sino de descubrir su verdad auténtica. Confíe en el proceso, confíe en &nbsp;<image-text>RippleNav</image-text>&nbsp; y, lo más importante, confíe en su propia sabiduría interna mientras navega por estos paisajes numéricos.
+      </p>
+      <p>
+        En nuestro próximo módulo, comenzaremos a aplicar estas comprensiones para identificar y liberar fusiones de memoria específicas, utilizando todas las herramientas que hemos explorado hasta ahora.
+      </p>
+      <br><br>
+
+
+
+    </div>
+
+    <div id="Tab9" class="tabcontent">
+      <h2>Módulo 9</h2>
+      <h2>Preparando Cuerpo, Mente y Espíritu</h2>
+      <p>
+        Este es un conocimiento esencial para su éxito en la vida, cómo crear las condiciones óptimas para trabajar con &nbsp;<image-text>RippleNav</image-text>&nbsp; y conectarse con las capas más profundas de la conciencia.
+      </p>
+      <p>
+        Así como un jardinero prepara la tierra antes de plantar semillas, necesitamos prepararnos para comprometernos con este trabajo. &nbsp;<image-text>RippleNav</image-text>&nbsp; es un instrumento sensible que responde a su energía y claridad de intención. Exploremos cómo crear el entorno perfecto para este proceso.
+      </p>
+      <h2>La Sabiduría del Bienestar Físico</h2>
+
+
+      <p>&nbsp;<image-text>RippleNav</image-text>&nbsp; no responderá de manera efectiva si se encuentra mal, agotado o bajo la influencia de medicamentos fuertes o sustancias. En realidad, esta es una salvaguarda natural, porque trabajar con la mente subconsciente a veces puede ser intenso y requiere que esté completamente presente y centrado.
+      </p>
+      <p>
+        Si descubre que &nbsp;<image-text>RippleNav</image-text>&nbsp; no responde como debería, tómese un momento para verificar su bienestar físico. ¿Está combatiendo una enfermedad? ¿Descansó lo suficiente anoche? ¿Ha tomado algún medicamento que pueda estar afectando su claridad?
+      </p>
+      <p>
+        Otra gran manera de preparar su cuerpo es hacer fluir su sangre. El movimiento crea energía y la energía crea conexión. Dé un suave paseo por la naturaleza, haga algunos estiramientos o practique algunas posturas de yoga, lo que se sienta adecuado para su cuerpo. Para nuestros ancianos en este viaje, incluso los movimientos suaves mientras están sentados pueden ayudar a despertar el flujo natural del cuerpo.
+      </p>
+      <p>
+        A veces, a pesar de nuestras mejores preparaciones, simplemente podríamos estar teniendo un mal día. Las energías cósmicas podrían no estar alineadas, o tal vez su cuerpo esté procesando algo en un nivel profundo. En estos momentos, practique la paciencia y la autocompasión. Hay sabiduría en esperar un mejor momento, tal vez más tarde en el día o incluso a la mañana siguiente.
+      </p>
+
+
+
+      <hr>
+      <!---------------------------------------------------------------------------------------------------------------------------------------->
+      <br><br>
+      <hr>
+      <br><br>
+
+      <h2>Nutriendo la Claridad Mental
+      </h2>
+
+
+
+      <p>
+        La claridad mental es como una ventana a través de la cual percibimos nuestro paisaje interior. Cuando la ventana está limpia y clara, podemos ver con precisión y detalle. Cuando está nublada o brumosa, nuestra percepción se vuelve limitada.
+      </p>
+      <p>
+        En nuestra experiencia, tomar un complejo de vitamina B por la mañana puede favorecer el estado de alerta mental. Estas vitaminas nutren su sistema nervioso y ayudan a mantener las vías energéticas en su cerebro. Sin embargo, recomiendo evitar la vitamina B después de las 2:00 de la tarde, ya que podría interferir con sus ritmos naturales de sueño. Sin embargo, si necesita mantenerse despierto durante las horas de la noche, la vitamina B1 en tabletas de 250 mg puede ser particularmente útil.
+      </p>
+      <p>
+        Otro maravilloso aliado para la claridad mental es el Omega-3, que puede encontrar en el aceite de pescado o, para mis amigos vegetarianos, en el aceite de linaza. Una deficiencia en estos ácidos grasos esenciales puede crear lo que muchos describen como "niebla mental", un estado donde el pensamiento se siente nublado y lento.
+      </p>
+      <p>
+        Un multivitamínico de alta calidad también puede proporcionar suficientes vitaminas B para apoyar su trabajo con &nbsp;<image-text>RippleNav</image-text>&nbsp;. Y mientras hablamos de suplementos, vale la pena mencionar que ciertos medicamentos, particularmente aquellos para dolores de cabeza o dolor, pueden inducir somnolencia o crear una sensación de desconexión que podría interferir con su capacidad para conectarse claramente con la conciencia colectiva.
+      </p>
+      <p>
+        Por supuesto, siempre recomiendo consultar con su proveedor de atención médica antes de comenzar cualquier nuevo régimen de suplementos. Nuestros cuerpos son únicos, y lo que funciona de maravilla para una persona podría no ser adecuado para otra.
+      </p>
+
+      <!---------------------------------------------------------------------------------------------------------------------------------------->
+      <br><br>
+      <hr>
+      <br><br>
+
+      <h2>Creando un Espacio Tranquilo</h2>
+
+
+
+      <p>
+        Más allá de la preparación física y mental, es importante crear un entorno libre de distracciones. Al igual que prepararía un espacio tranquilo para la meditación o el yoga, cree un lugar especial para su trabajo con &nbsp;<image-text>RippleNav</image-text>&nbsp;.
+      </p>
+      <p>
+        Asegúrese de estar bien alimentado antes de comenzar, trabajar con el estómago vacío puede desviar su atención de las sutiles respuestas de &nbsp;<image-text>RippleNav</image-text>&nbsp;. Considere también qué podría distraerle durante su sesión. ¿Su vecino tiene una reunión con música a todo volumen? ¿Su coche está aparcado en un espacio de tiempo limitado donde podría recibir una multa? ¿Está esperando una llamada importante?
+      </p>
+      <p>
+        Tómese unos momentos para abordar estas posibles distracciones antes de comenzar. Quizás silencie su teléfono o apáguelo por completo si es posible. Cierre las ventanas si el ruido exterior es molesto. Cree un contenedor de tiempo y espacio donde pueda estar completamente presente con este trabajo de sanación.
+      </p>
+
+
+
+      <!---------------------------------------------------------------------------------------------------------------------------------------->
+      <br><br>
+      <hr>
+      <br><br>
+
+      <h2>El Viaje hacia una Conciencia Más Profunda</h2>
+
+
+
+
+      <p>
+        Algo interesante que puede notar al trabajar con la mente inconsciente, de repente puede sentirse increíblemente somnoliento o bostezar repetidamente. Esto en realidad es bastante natural, ya que se está involucrando con aspectos de la conciencia asociados con momentos en los que estaba parcial o totalmente inconsciente.
+      </p>
+      <p>
+        Incluso podría sentir que se adormece mientras busca números mágicos. Cuando esto suceda, recupere suavemente el estado de alerta. Póngase de pie por un momento, mueva su cuerpo, tal vez salpique un poco de agua fría en su rostro y luego continúe. Esta somnolencia se resolverá por sí sola a medida que progrese en su práctica.
+      </p>
+
+
+      <!---------------------------------------------------------------------------------------------------------------------------------------->
+      <br><br>
+      <hr>
+      <br><br>
+
+      <h2>El Camino de las Secuencias
+      </h2>
+
+
+
+
+      <p>
+        A medida que comience a trabajar con &nbsp;<image-text>RippleNav</image-text>&nbsp;, descubrirá que los números mágicos a menudo aparecen en secuencias de incidentes relacionados. Si bien experimentará cambios de sanación a lo largo de todo el viaje, la transformación más profunda generalmente ocurre cuando llega al primer número mágico o el más temprano en una secuencia.
+      </p>
+      <p>
+        El enfoque general es continuar encontrando y liberando números mágicos, retrocediendo en el tiempo a lo largo de la secuencia hasta que llegue a ese evento inicial, el primer número mágico en ese hilo particular de experiencia.
+      </p>
+      <p>
+        Si necesita pausar su trabajo antes de llegar a ese primer número mágico, sepa que está completamente bien. No pasará nada negativo. Simplemente puede continuar con esa secuencia durante su próxima sesión con &nbsp;<image-text>RippleNav</image-text>&nbsp;. El trabajo de sanación que ya ha completado permanece intacto.
+      </p>
+
+
+
+      <!---------------------------------------------------------------------------------------------------------------------------------------->
+      <br><br>
+      <hr>
+      <br><br>
+
+      <h2>La Liberación Sanadora
+      </h2>
+
+
+
+
+      <p>
+        En módulos posteriores, le guiaré a través de métodos específicos, paso a paso, para liberar los efectos negativos de estas fusiones de memoria. Pero el proceso esencial implica encontrar una secuencia de incidentes conectados al desafío que desea superar, y luego trabajar hacia atrás a través de esa secuencia (desde el último hasta el primero), descubriendo el número mágico para cada incidente, lo que libera la energía y las emociones atrapadas.
+      </p>
+      <p>
+        El resultado de este trabajo suele ser una profunda sensación de alivio y plenitud. El problema que le preocupaba puede sentirse completamente resuelto o disminuido significativamente. Para liberar completamente un patrón complejo, generalmente necesitará trabajar con todas las secuencias relacionadas con ese desafío específico. Estos son procesos poderosos que traen resultados notables.
+      </p>
+
+
+
+      <!---------------------------------------------------------------------------------------------------------------------------------------->
+      <br><br>
+      <hr>
+      <br><br>
+
+      <h2>Expandiendo Su Conciencia</h2>
+
+
+      <p>
+        Antes de concluir la exploración de hoy, me gustaría compartir una práctica especial que puede ayudar a las personas nuevas que aún no han desarrollado el nivel de autoconciencia necesario para participar plenamente con &nbsp;<image-text>RippleNav</image-text>&nbsp;. Si se encuentra "atrapado en su cabeza" e incapaz de recibir respuestas claras, este ejercicio de expansión de conciencia puede ayudarle a extender su conciencia más allá de sus límites habituales.
+      </p>
+
+
+
+      <p>
+        Tómese un momento ahora para cerrar los ojos e imagínese creciendo más y más grande. Siéntase expandiéndose hasta que sus pies toquen la Tierra y la parte superior de su cabeza alcance la luna. En el ojo de su mente, mire hacia abajo y vea sus pies firmemente plantados en nuestro hermoso planeta. Mire hacia arriba y sienta a la luna rozando suavemente contra su frente.
+      </p>
+
+
+
+
+
+      <p>
+        Ahora crezca aún más. Imagínese tan vasto que pueda rodear con sus brazos a toda la Tierra en un abrazo amoroso. Continúe expandiéndose hasta que sea lo suficientemente grande como para sostener a toda nuestra galaxia, con todos sus planetas y estrellas, dentro de su abrazo cósmico.
+      </p>
+
+
+
+      <!---------------------------------------------------------------------------------------------------------------------------------------->
+      <br><br>
+      <hr>
+      <br><br>
+
+      <h2>Consideraciones Técnicas
+      </h2>
+
+
+
+
+
+      <p>
+        Finalmente, una breve nota sobre la tecnología que está utilizando. Si bien puede leer estas lecciones en cualquier dispositivo, computadora, computadora portátil, tableta o teléfono, cuando comience a trabajar activamente con &nbsp;<image-text>RippleNav</image-text>&nbsp;, es importante utilizar equipos de buena calidad.
+      </p>
+      <p>
+        &nbsp;<image-text>RippleNav</image-text>&nbsp; es sensible a dispositivos de bajo rendimiento y puede responder de forma errática o detenerse ocasionalmente cuando se utiliza en equipos que tienen dificultades para mantenerse al día. Esto también puede suceder si su dispositivo está ejecutando actualizaciones en segundo plano, lo que a menudo ocurre cuando conecta un cargador a un dispositivo móvil.
+      </p>
+      <p>
+        Si nota que &nbsp;<image-text>RippleNav</image-text>&nbsp; no se mueve suavemente, es posible que desee esperar a que se completen las actualizaciones en segundo plano, o ajustar la configuración de su dispositivo para pausarlas temporalmente. &nbsp;<image-text>RippleNav</image-text>&nbsp; debería fluir con gracia y facilidad, excepto durante ciertas fases de liberación que discutiremos en nuestro próximo módulo.
+      </p>
+      <p>
+        Recuerde que crear las condiciones adecuadas para este trabajo es un acto de amor propio y respeto por el proceso de sanación. Al preparar su cuerpo, su mente y su entorno, está preparando el escenario para grandes resultados.
+      </p>
+      <p>
+        Tómese un tiempo antes de nuestra próxima sesión para considerar cómo podría optimizar su propio espacio de curación. ¿Qué ajustes podría hacer para apoyar su trabajo con &nbsp;<image-text>RippleNav</image-text>&nbsp;? ¿Cómo puede asegurarse de estar abordando esta práctica con claridad y presencia?
+      </p>
+
+
+      <br><br><br>
+    </div>
+
+    <div id="Tab10" class="tabcontent">
+      <h2>Módulo 10</h2>
+
+      <h2>Antes de empezar</h2>
+      <p>
+        Esta es la preparación final antes de que comience a trabajar directamente con la herramienta &nbsp;<image-text>RippleNav</image-text>&nbsp; para estar listo para la misión.
+      </p>
+      <p>
+        Todo lo que hemos explorado hasta ahora ha estado sentando las bases para este momento. Las instrucciones que estoy a punto de compartir también aparecerán en la página donde usará el &nbsp;<image-text>RippleNav</image-text>&nbsp; real, así que no se preocupe por memorizar todo de inmediato. Con la práctica, estos pasos se volverán naturales.
+      </p>
+      <p>
+        Repasemos cada paso del proceso juntos. Si es nuevo en este trabajo, recuerde comenzar con el ejercicio de "Estiramiento Cerebral" (Brain Stretch) que exploramos en el Módulo 9, esto le ayudará a expandir su conciencia más allá de su conciencia diaria.
+      </p>
+
+      <p>
+        Toda la siguiente orientación está destinada a seguirse en silencio, en el espacio tranquilo de su mente. No hay necesidad de hablar en voz alta, &nbsp;<image-text>RippleNav</image-text>&nbsp; responde a su intención consciente, no a su voz.
+      </p>
+
+      <p style="background-color:rgba(255, 0, 0, 0.323);">
+        También hay algo importante que no he mencionado antes: &nbsp;<image-text>RippleNav</image-text>&nbsp; es solo para sus ojos durante una sesión.
+        Por favor, no invite a alguien más a mirar mientras lo está usando. Es probable que la herramienta responda a ambos campos energéticos simultáneamente, creando patrones de movimiento que no tendrán sentido para ninguno de los dos. Piense en ello como una conversación privada entre usted y su conciencia más profunda.
+      </p>
+      <p>
+        Se estará preguntando cómo esta herramienta puede abordar los desafíos de salud mental como la ansiedad, la depresión o fobias específicas. Estos problemas se conectan con usted a través de números mágicos, de manera similar a cómo una frecuencia específica puede sintonizar una estación de radio en particular. Para trabajar con cualquier preocupación de salud mental, se centrará en un sentimiento o impulso asociado con ello y encontrará el número mágico que se vincula a esa experiencia.
+      </p>
+      <p>
+        Si esto parece un poco abstracto en este momento, por favor no se preocupe. Hasta este punto, hemos estado explorando la teoría sin práctica. Pronto tendrá experiencia práctica con la herramienta, y todo comenzará a tener mucho más sentido.
+      </p>
+      <p>
+        Sé que usar esta herramienta por primera vez puede resultar intimidante. A muchas personas les resulta útil imprimir los pasos o tomar notas para hacer referencia durante sus primeras sesiones. Recomiendo leer las instrucciones varias veces y luego intentar recordarlas de memoria.
+      </p>
+      <p>
+        Es probable que cometa algunos errores al principio, y eso está perfectamente bien. Es parte del proceso de aprendizaje. Piense en cuando aprendió a conducir un automóvil por primera vez. Al principio, tenía que pensar conscientemente en cada acción, girar la llave, revisar los espejos, aplicar la presión adecuada a los pedales. Pero con la práctica, estas acciones se volvieron automáticas. Lo mismo sucederá con &nbsp;<image-text>RippleNav</image-text>&nbsp;.
+      </p>
+      <p>
+        Recuerde que está participando en este trabajo de sanación para mejorarse a sí mismo y su vida, no como algún tipo de castigo u obligación. Abórdelo con suave curiosidad en lugar de con juicios severos.
+      </p>
+
+
+
+      <hr>
+
+      <h2>El Proceso de Sanación</h2>
+
+      <p>
+        Como recordatorio, usamos el término UTE para "Experiencia Traumática Unificadora", los incidentes de fusión que hemos discutido en módulos anteriores. El proceso fundamental para encontrar y liberar estas experiencias fusionadas es maravillosamente simple:
+      </p>
+      Solo hay 2 pasos que se muestran a continuación.
+      <ol>
+        <li>Encontrar la 'UTE'</li>
+        <li>Encontrar el número mágico</li>
+      </ol>
+      </p>
+      </p>
+      <p>
+        Sin embargo, para asegurarse de que está abordando este proceso con conciencia y precisión, vamos a expandir estos dos pasos a un protocolo de siete pasos que incluye importantes controles de verificación.
+      </p>
+
+
+
+
+      <hr>
+
+      <p>
+        No hay necesidad de ponerse nervioso. Todavía estamos lidiando con los DOS pasos anteriores, pero ahora simplemente los verificamos más a fondo.
+      </p>
+
+      <p>
+        Aquí están los nueve pasos que seguiremos:
+      <ol>
+        <li><b style="background-color:rgba(255, 255, 0, 0.323);">Encontrar la primera 'UTE'</b></li>
+        <li>Asegurarse de haberla encontrado</li>
+        <li><b style="background-color:rgba(255, 255, 0, 0.323);">Encontrar el número mágico</b></li>
+        <li>¿Se disolvió la 'fusión'?</li>
+        <li>Si la separación no ocurrió, ir al 3</li>
+        <li>Asegurarse de que se disolvió</li>
+        <li>Decirle al objetivo que informe a todos los demás seres en la UTE cuál es el número mágico.</li>
+        <li>Asegurarse de que al menos el 95% de ellos 'obtengan' el número mágico.</li>
+        <li>¿Están disueltas todas las fusiones para este problema?</li>
+      </ol>
+      </p>
+
+      <p>
+
+Paso 7 y 8: Transmitir y Verificar
+Debido a que una UTE involucra un 'número mágico' específico de seres, su realización por sí sola es solo una parte de la cura. Debe indicar a su Objetivo que actúe como un relé, transmitiendo esta verdad al resto de la red entrelazada. Pregúntele a RippleNav, "¿Al menos el 95% de ellos recibieron el número?" y observe la confirmación hacia la derecha.
+</p>
+
+      <hr>
+
+
+      <h2>Paso 1: Encontrar la Primera UTE</h2>
+
+      <p>
+        Digamos que quiere abordar un desafío específico, quizás sentimientos de tristeza, depresión persistente, una fobia a las arañas o cualquier otro patrón mental o emocional que esté interrumpiendo su bienestar.
+      </p>
+      <p>
+        Comience dirigiéndose mentalmente al universo mientras observa &nbsp;<image-text>RippleNav</image-text>&nbsp;. En el silencio de su mente, diga: "Encuentra la primera UTE que me conecta con..." y luego nombre su preocupación específica.
+      </p>
+
+      <p>
+        Esta secuencia particular de experiencias fusionadas se convierte en su "Objetivo", el foco de su trabajo de sanación.
+      </p>
+
+
+
+
+      <hr>
+
+      <h2>Paso 2: Asegúrese de Haberla Encontrado</h2>
+
+      <p>
+        Después de declarar su intención, pregunte: "¿La encontraste?" &nbsp;<image-text>RippleNav</image-text>&nbsp; debería responder con un breve movimiento hacia la derecha.
+        Si no ve esta confirmación, simplemente repita el paso anterior hasta que &nbsp;<image-text>RippleNav</image-text>&nbsp; indique que ha localizado la UTE.
+      </p>
+
+      <p>
+        Si descubre que no obtiene ninguna respuesta en absoluto, hay dos explicaciones posibles. O el problema que está abordando no está conectado a una experiencia de fusión (lo cual es raro), o, más probablemente, lo está abordando de manera demasiado amplia.
+      </p>
+      <p>
+        Por ejemplo, en lugar de centrarse en "sentirse deprimido" como un estado general, es posible que deba ser más específico, como "sentirme deprimido por mi relación" o "sentirme deprimido por mi carrera profesional". Cuanto más preciso pueda ser, más eficazmente podrá &nbsp;<image-text>RippleNav</image-text>&nbsp; localizar la UTE correspondiente.
+      </p>
+
+
+
+
+
+
+
+      <hr>
+
+      <h2>Paso 3: Encuentre el Número Mágico</h2>
+
+      <p>
+        Usando el método de reducción a la mitad que aprendimos en el Módulo 7, encuentre el número mágico para la UTE que acaba de localizar. Mientras busca, mantenga su Objetivo del paso 1 claramente en su conciencia.
+      </p>
+      <p>
+        Normalmente comenzamos nuestra búsqueda en 5.000 y procedemos desde allí, comprobando "mayor que" o "menor que" para reducir las posibilidades. Cuando haya descubierto el número, dígale mentalmente a su Objetivo, "El número es..." y exprese el número que ha encontrado.
+      </p>
+
+
+
+
+
+
+      <hr>
+
+      <h2>Paso 4: ¿Se Disolvió la Fusión?</h2>
+
+      <p>
+        Mantenga siempre su atención en &nbsp;<image-text>RippleNav</image-text>&nbsp;. Entre 1 y 5 segundos después de decirle a su Objetivo cuál es el número mágico, debería observar un movimiento de "liberación" más largo.
+      </p>
+      <p>
+        Una liberación ocurre cuando una fusión se disuelve, liberándole de los recuerdos inconscientes que no eran auténticamente suyos. Esta liberación suele ir acompañada de una sutil sensación de tensión que abandona su cuerpo o mente.
+      </p>
+
+      <p>
+        Junto con un 'sentimiento' real de alivio, hay tres patrones distintos que indican una liberación, todos con una duración de entre 1 y varios segundos:
+      </p>
+      <ol>
+        <li>Un movimiento largo y sostenido a la derecha </li>
+        <li>Un movimiento rápido a la derecha seguido de un movimiento más largo a la izquierda </li>
+        <li>Un movimiento errático, similar a un baile, que va en ambas direcciones </li>
+      </ol>
+
+      <p>
+        Si no observa ninguno de estos patrones de liberación, probablemente significa que no ha encontrado el número mágico correcto. Esto sucede a veces, es parte del proceso.
+
+
+
+
+
+
+
+        <hr>
+
+      <h2>Paso 5: Asegúrese de que se Disolvió</h2>
+
+      <p>Para verificar que la fusión realmente se ha disuelto, pregunte a su Objetivo: "¿Se disolvió?" o "¿Se separó?", cualquier terminología que resuene más con usted.</p>
+
+      <p>
+        Si no recibe una respuesta, intente preguntar lo contrario: "¿No se disolvió?" o "¿No se separó?"
+      </p>
+
+      <p>
+        Estas preguntas de verificación ayudan a asegurar que está interpretando con precisión las respuestas de &nbsp;<image-text>RippleNav</image-text>&nbsp;.
+      </p>
+
+
+
+
+
+      <hr>
+
+      <h2>Paso 6: Si la Separación No Ocurrió</h2>
+
+      <p>
+        Si &nbsp;<image-text>RippleNav</image-text>&nbsp; indica que no se produjo la separación, lo que significa que los recuerdos fusionados no se han liberado, entonces su número mágico no es del todo correcto. Podría equivocarse por una pequeña cantidad, tal vez unos cientos o miles, o podría estar significativamente fuera del objetivo.
+      </p>
+
+      <p>
+        En este caso, regrese al Paso 3 y trate de trabajar con números muy diferentes. Podría comenzar con 500, o tal vez 5 millones, o incluso 5 cuatrillones, y continuar desde allí. Confíe en su intuición para guiarlo hacia la escala correcta.
+      </p>
+
+
+
+
+      <hr>
+
+      <h2>Paso 7: Dígale a todos los demás en el grupo cuál es el número.</h2>
+
+      <p>
+      Se ha descubierto que el ser con el que está en contacto tiene los medios para realizar una transmisión masiva a todos los demás seres en ese incidente.
+      Diga mentalmente al ser: "Dígale a todos los demás en ese grupo cuál es el número mágico"
+      <p>
+
+
+      <hr>
+
+      <h2>Paso 8: Asegúrese de que al menos el 95% de esos seres reciban ese mensaje.</h2>
+
+      <p>
+        Observe la reacción de RippleNav al paso anterior. Por lo general, puede ver que está 'ocupado' mientras el ser va contándoselo a todos.
+        Una vez que parezca calmarse, pregunte: "¿Al menos el 95% de ellos entendió el número?" o una redacción similar. Si no obtiene respuesta, entonces el ser necesita trabajar más duro en la transmisión.
+        A veces, estos incidentes fueron bastante dramáticos y dejaron a los seres en un estado de inconsciencia, como en un sueño profundo. Indique al ser que los 'despierte' para ayudarlos. Destaque la importancia.
+        Con un poco de persuasión, siempre puede llegar al 95%.
+      </p>
+
+      <hr>
+
+      <h2>Paso 9: ¿Están Disueltas Todas las Fusiones para Este Problema?</h2>
+
+      <p>
+        Una vez que haya liberado con éxito una fusión, es posible que haya llegado a la primera UTE en la secuencia. Esto generalmente se acompaña de una sensación más profunda de bienestar o liberación de la que ha experimentado con números anteriores.
+      </p>
+      <p>
+        Para comprobar si ha completado toda la secuencia, puede hacerle a su Objetivo preguntas como:
+      </p>
+      <ol type="a">
+        <li>"¿Todavía estamos conectados?"</li>
+        <li>"¿Se fue?"</li>
+        <li>"¿Desapareció?"</li>
+      </ol>
+
+      <p>
+        Si el Objetivo se libera por completo, entonces la pregunta "¿Todavía estamos conectados?" no debería recibir respuesta, mientras que preguntas como "¿Se fue?" o "¿Desapareció?" deberían obtener una confirmación.
+      </p>
+      <p>
+        Si aún no ha llegado a la primera UTE de la secuencia, simplemente regrese al Paso 1 y repita el proceso hasta que haya resuelto el problema por completo.
+      </p>
+
+      <p>
+        Es importante tener en cuenta que, aunque siempre pide la "primera UTE", rara vez la encontrará en su primer intento. Es por esto que necesita repetir los pasos hasta llegar a ese punto de fusión inicial. La razón de esto involucra algunos aspectos complejos de la conciencia que no exploraremos todavía, pero confíe en que el proceso funciona cuando se sigue con paciencia y presencia.
+      </p>
+
+
+
+
+
+
+      <hr>
+
+      <h2>Un Viaje de Sanación</h2>
+
+      <p>
+        Al concluir este módulo de preparación final, quiero recordarle una vez más que una Experiencia Traumática Unificadora hace que la información de tiempo y ubicación que rodea a ese incidente se confunda, creando una fusión que le conecta a muchas fuentes de patrones psicológicos que pueden no pertenecerle auténticamente.
+      </p>
+
+      <p>
+        El proceso que acabamos de explorar le permite identificar estas fusiones y liberarlas, restaurando gradualmente su verdadera firma energética y su paisaje emocional auténtico.
+      </p>
+
+      <p>En nuestro próximo módulo, tendrá la oportunidad de comenzar a trabajar directamente con la herramienta &nbsp;<image-text>RippleNav</image-text>&nbsp;. Aborde esta práctica con paciencia, curiosidad y compasión por sí mismo. Cada paso que da le acerca a la libertad emocional y a la expresión auténtica de sí mismo.
+      </p>
+
+      <p>
+        Honro el coraje y el compromiso que está aportando a este viaje de sanación. Recuerde que la transformación no siempre es lineal, puede haber momentos de profunda perspicacia seguidos de períodos de integración. Confíe en el proceso y confíe en su sabiduría interior a medida que avanza.
+      </p>
+
+
+
+
+
+
+    </div>
+
+    <div id="Tab11" class="tabcontent">
+      <h2>Módulo 11</h2>
+      <p>
+        La idea general aquí es que practique los nueve pasos de sus módulos anteriores, pero ahora los perfeccione aún más.
+
+      </p>
+
+      <p>
+        El truco es dividir su atención con un 90% en un tema de su mente y solo un 10% en &nbsp;<image-text>RippleNav</image-text>&nbsp;. La mayoría de los recién llegados tendrán TODA su atención en &nbsp;<image-text>RippleNav</image-text>&nbsp; porque es nuevo e interesante, especialmente la primera vez que lo ve responder a un pensamiento que tuvo.
+      </p>
+
+
+      <p>
+        Necesita 'observar' &nbsp;<image-text>RippleNav</image-text>&nbsp; pero 'trabajar' en su mundo interior porque ahí es donde están las cosas que queremos arreglar. Pase unas horas haciendo esto hasta que pueda hacer los nueve pasos sin tener que usar el 'ayudante' que pusimos debajo de &nbsp;<image-text>RippleNav</image-text>.&nbsp;
+      </p>
+
+
+      <p>
+        La configuración de sensibilidad (El botón verde en la barra gris) de &nbsp;<image-text>RippleNav</image-text>&nbsp; se puede utilizar para aumentar el tamaño de 'detección' de las UTE y otros movimientos. Aumentarlo demasiado hará que el dispositivo sea inutilizable porque todo estará en movimiento. Los usuarios experimentados operarán el dispositivo con una sensibilidad en el rango de 10 - 25, pero depende de usted. Haga lo que funcione para usted.
+      </p>
+
+      <p>
+        Para encontrar las UTE, simplemente piense en los momentos en que estuvo molesto, deprimido, enojado, hizo algo de lo que se arrepintió, dijo algo de lo que se arrepintió, etc. Cualquier pensamiento que genere una respuesta en &nbsp;<image-text>RippleNav</image-text>&nbsp; es una UTE. Solo necesita 'encontrarla', poner su atención en ella, encontrar su Número Mágico.
+      </p>
+      <p>
+        Hay formas más efectivas de encontrar las UTE que explicamos en el siguiente módulo, pero queremos que primero practique un poco aquí.
+      </p>
+
+      <p>
+        Recomendamos al menos 4 horas de aplicación de este módulo antes de pasar al siguiente módulo
+      </p>
+
+
+      <br><br>
+      <hr><!-------------------------------------------------------------------------------------------->
+      <br><br>
+
+      <p><span class="amberBack">
+          Un recordatorio, una Experiencia Traumática Unificadora (UTE) causará que la información de tiempo y ubicación que rodea a ese incidente se confunda, lo que causará una 'fusión' y lo conectará a muchas 'fuentes' de problemas psicológicos.</span></p>
+
+      <br><br>
+      <hr><!-------------------------------------------------------------------------------------------->
+      <br><br>
+
+
+
+
+    </div>
+
+    <div id="Tab12" class="tabcontent">
+      <h2>Módulo 12</h2>
+      <h3>Localice la Fuente</h3>
+
+      <p>
+        <i>Ser: Un ser es cualquier criatura viviente, desde una persona hasta un insecto. Ser (Being) también se refiere al estado de existir. "Ser o no ser", esa es la cuestión cuando se habla del ser. Las cosas que existen están en un estado de ser: este significado de ser es un poco vago, pero tiene que ver con la forma en que las cosas están vivas y son reales.
+        </i>
+      </p>
+
+      <p>
+        Hasta ahora ha estado eliminando bloqueos mentales (UTE, 'fusiones') ya sea enfocándose en una emoción no deseada o utilizando una lista de problemas para encontrar objetivos.
+      </p>
+
+      <p>Puede hacer una lista de las cosas que le perturban y molestan y luego revisar la lista sistemáticamente.
+        Cuando crea que ha llegado a un punto en el que su lista actual ya no produce resultados, espere unas semanas y luego vuelva a esa lista y producirá nuevos resultados.
+        Mientras tanto, haga una nueva lista.
+      </p>
+
+      <p>
+        Ahora queremos que se centre directamente en otras personas. Este es en realidad el método preferido para eliminar 'fusiones' y debería usar este nuevo método de ahora en adelante. Aún puede usar listas pero use este nuevo método. Esto puede volverse bastante activo, así que esté preparado.
+      </p>
+
+
+
+      <p>
+        Para aclarar, la diferencia entre este método y el anterior es que aquí ubica a una persona o ser en su espacio mental, LUEGO elimina los incidentes de 'fusión' de esa persona. El método anterior le hacía localizar un incidente de fusión directamente y luego deshacerlo, lo que puede dejar algo de energía revuelta sin manejar. Use siempre este nuevo método de ahora en adelante.
+      </p>
+
+      <p>
+        Aquí, mientras observa &nbsp;<image-text>RippleNav</image-text>,&nbsp; enfocaría su atención en una persona o ser en particular. Los árboles, animales, mascotas, etc. son seres con los que probablemente tenga UTE. No se trata solo de personas, pero la mayoría de las personas comenzarían esta sección buscando a otras personas.
+      </p>
+      <p>
+        Si obtiene una lectura de &nbsp;<image-text>RippleNav</image-text>&nbsp; mientras pone su atención en una persona en particular, entonces <b>sí</b> tiene UTE con esa persona o ser. También puede verificar esto preguntándole mentalmente a la persona o ser "¿Tenemos alguna UTE?"
+      </p>
+      <p>
+        Una vez que haya localizado a una persona o ser adecuado, hace lo que hizo antes, excepto que ahora la persona o ser es el objetivo de su atención.
+      </p>
+
+
+      <p>
+        Si el concepto de un "ser" le causa incomodidad, vale la pena recordar que usted también es un ser. La esencia de la vida en cualquier entidad viva proviene de un ser que interactúa con ella y la gobierna. Cuando la vida termina, el ser en sí no perece; más bien, parte, potencialmente embarcándose en una nueva existencia en otra parte. Abrace esta perspectiva para aliviar cualquier temor con respecto a otros seres; son fundamentalmente similares a usted. Esta verdad universal se extiende a todos, incluidos aquellos a quienes aprecia e incluso a aquellos que pueden no agradarle. Cada uno es un ser, al igual que usted.
+      </p>
+
+
+
+      <p>
+        Así que continuemos.<br>
+      </p>
+
+
+
+      <p>Ahora, antes de que entre en pánico y piense, Oh nooooo..., más pasos que aprender. No se preocupe, <b>siguen siendo esos mismos siete pasos</b> de antes, excepto que <i>antes</i> del paso 1, encuentra un ser en su espacio mental que proporciona una fuerte respuesta en &nbsp;<image-text>RippleNav</image-text>.&nbsp; Una vez que tenga un ser adecuado, use los nueve pasos para eliminar sus UTE de ese ser.</p>
+
+      <br><br>
+      <hr><!------------------------------------------------------------------------------------------>
+      <br><br>
+
+
+
+
+      <p>
+
+      <ol>
+        <li>Mire en su espacio mental y encuentre un ser</li>
+        <li>Dígale al ser que: Encuentre la primera UTE que tenga con usted.</li>
+        <li>Observe &nbsp;<image-text>RippleNav</image-text>.&nbsp; Debería obtener una respuesta cuando la encuentren.</li>
+        <li>Si no está seguro, pregunte "¿La encontraste?" y busque la respuesta.</li>
+        <li>Ahora localice el número mágico para ese incidente.</li>
+        <li>Dígale mentalmente al ser cuál es el número mágico.</li>
+        <li>Asegúrese de que sea el número correcto (¿se separó?, etc.).</li>
+        <li>Ahora dígale al ser que informe a todos los demás seres de ese incidente cuál es el número mágico.</li>
+        <li>Asegúrese de que al menos el 95% de los seres de ese grupo 'entiendan' el número mágico.</li>
+        <li>Repita lo anterior hasta que tenga <b>cero</b> UTE con ese ser.</li>
+        <li>El ser ya no es detectable en &nbsp;<image-text>RippleNav</image-text>.&nbsp; </li>
+      </ol>
+      </p>
+
+      <p> Nota: Los pasos 8 y 9 son una adición reciente que mejora enormemente el resultado. Debe recordar hacerlos en módulos posteriores que pueden no haber sido actualizados aún.
+      </p>
+
+      <p>
+        Tenga en cuenta que podría tener desde una sola UTE con la persona hasta varios cientos. No tiene que deshacerlas todas de una sola vez. Aborde este proceso a un ritmo que sea cómodo para usted, tratando lo que pueda en cada sesión. Luego, continúe trabajando en ellas gradualmente, día a día, dándose el tiempo y el espacio necesarios para una resolución exhaustiva y reflexiva.
+      </p>
+
+
+      <br><br>
+      <hr><!------------------------------------------------------------------------------------------>
+      <br><br>
+
+      <h2l>Información Adicional</h2l>
+
+      <p>
+        Dado que ahora ha tenido varias horas de experiencia con &nbsp;<image-text>RippleNav</image-text>,&nbsp; también puede haber notado que el dispositivo a veces se contrae como si tratara de llamar su atención o reprenderlo por algo. Bueno, todo eso es cierto. Ha estado interactuando con seres desde el principio y ellos intentarán decirle cosas como "¡NO! el número es MUCHO mayor" o "¡OYE! vuelve a poner tu atención aquí y continúa", etc.
+      </p>
+      <p>
+        Comprender por qué un "ser" no puede simplemente identificar y abordar la primera UTE puede ser desconcertante. Aquí hay una explicación simplificada: El tiempo y el espacio son conceptos que existen dentro de un universo, no fuera de él. Considerando la multitud de universos que existen, la mayoría, si no todos, podrían contener UTE.
+      </p>
+      <p>
+        Cuando un ser intenta localizar la primera UTE, normalmente encuentra la más antigua dentro de este universo. Si bien este es un descubrimiento significativo, no es la imagen completa. Si se remite a &nbsp;<image-text>RippleNav</image-text>,&nbsp; notará que hay UTE adicionales con ese ser. Estas probablemente residan en otros universos. Pero identificar el primer universo en el que existió un ser es complejo porque el tiempo no funciona entre universos de la manera en que lo entendemos.
+      </p>
+      <p>
+        Es un concepto difícil de entender y puede requerir cierta reflexión. Esencialmente, un ser no puede acceder directamente a la primera UTE compartida con usted porque hay múltiples incidentes 'primeros' en diferentes universos, no solo uno. Esta complejidad es un aspecto clave para comprender la naturaleza de los seres y sus interacciones en todos los universos.
+      </p>
+
+      <p>
+        Si mira a su alrededor en su mente, encontrará una gran cantidad de "seres" con los que tiene UTE. Muchos de esos incidentes fueron bastante traumáticos en ese momento y pueden proporcionar un gran alivio cuando el incidente se deshace. Son las emociones atrapadas en esos incidentes las que causan toda la ansiedad y otros problemas emocionales que tienen las personas.
+      </p>
+
+
+    </div>
+
+    <div id="Tab13" class="tabcontent">
+      <h2>Módulo 13</h2>
+      <h2>Métodos Avanzados</h2>
+
+      <p>El método de la distancia:</p>
+
+      <p>
+        En el módulo anterior, aprendimos cómo enfocar nuestra atención en personas y seres para identificar y resolver nuestras UTE.
+      </p>
+
+      <p>
+        Este enfoque es efectivo, pero asume que puede identificar fácilmente a un ser en su espacio mental. Sin embargo, ¿qué sucede cuando se enfrenta a un problema emocional o lucha por lograr una meta, pero no puede precisar el ser específico asociado con una UTE?
+      </p>
+
+      <p>
+        Para superar este desafío, se introduce una técnica más avanzada conocida como "El Método de la Distancia". Este método es particularmente útil para descubrir seres cuyos recuerdos ha absorbido inadvertidamente, centrándose en la conciencia espacial.
+      </p>
+
+
+      <hr>
+
+      <div style="display: flex; align-items: start;">
+        <ol>
+          <li>¿Frente a mí?</li>
+          <li>¿A mi derecha?</li>
+          <li>¿A mi izquierda?</li>
+          <li>¿Detrás de mí?</li>
+          <li>¿Por encima de mí?</li>
+          <li>¿Por debajo de mí?</li>
+        </ol>
+      </div>
+
+      </p>
+
+
+
+
+      <p>
+        Si recibe respuestas variables, concéntrese en la dirección que provoca la reacción más fuerte como su punto de partida.
+      </p>
+
+      <p>
+        A continuación, determine la distancia precisa en esa dirección, como 5,23 metros. Utilice &nbsp;<image-text>RippleNav</image-text>&nbsp; para averiguar esta distancia, comenzando desde una base de 5 metros y ajustando con 'mayor que' o 'menor que' según sea necesario. En esta etapa, debería encontrar este proceso sencillo.
+      </p>
+
+      <p>
+        Las distancias suelen oscilar entre 1 y 20 metros, aunque algunas pueden estar tan cerca como 0,1 milímetros o tan lejos como varios kilómetros. Es crucial no detenerse en el significado de estas distancias; son simplemente marcadores direccionales y direcciones numéricas para los seres en el 'espacio mental', y no se correlacionan con distancias físicas. Por ejemplo, un ser ubicado a 2,12 metros por encima de usted no está literalmente en el techo, sino a esa distancia en su percepción mental.
+      </p>
+
+      <p>
+        Una vez que haya determinado la 'dirección' del ser, anótela. Luego puede aplicar las técnicas anteriores para localizar y abordar las UTE.
+      </p>
+
+      <p>
+        Alternativamente, puede identificar un 'área de problema' usando una larga lista de posibles problemas, y luego emplear el método de la distancia para encontrar al ser responsable. Una vez localizado, proceda como antes.
+      </p>
+
+      <p>
+        Pronto se dará cuenta de que está conectado con miles de millones de seres de esta manera. Abordar estas conexiones es una tarea considerable, y se recomienda dedicar alrededor de 2 horas diarias a esta práctica.
+      </p>
+
+      <p>
+        Para ayudarlo a encontrar más UTE, también puede ir a Youtube y ver videos sobre temas que NO le gustan. Las cosas que le perturban y lo hacen sentir incómodo generalmente provienen de las UTE. Cualquier pensamiento que produzca un movimiento a la derecha en RippleNav es una UTE y puede abordarse utilizando la técnica anterior.
+      </p>
+
+      <p>Haga una lista de esas cosas que le perturban y molestan y luego revise la lista sistemáticamente.
+        Cuando crea que ha llegado a un punto en el que su lista actual ya no produce resultados. Espere unas semanas y luego vuelva a esa lista y producirá nuevos resultados.
+        Mientras tanto, haga una nueva lista.
+      </p>
+
+      <p>Está conectado a miles de millones de seres de esta manera y todas esas UTE lo están impactando negativamente de alguna forma.
+        Si cree que no puede encontrar ninguna UTE, entonces simplemente no se está esforzando lo suficiente o no está buscando o está evitando áreas potenciales.
+        Salga de su zona de confort, ahí es donde están los problemas.
+      </p>
+
+      <p>
+        El próximo módulo no debe intentarse hasta que haya invertido más de 400 horas en el módulo actual.
+        Esta participación extensa es necesaria por una razón crítica: implica identificar y resolver UTE con una amplia gama de seres. Este proceso es integral para mejorar significativamente su conciencia, preparándolo para captar y apreciar completamente los conceptos y técnicas avanzadas que ofrece el próximo módulo.
+      </p>
+    </div>
+
+    <div id="Tab14" class="tabcontent">
+      <h2>Módulo 14</h2>
+      <h3>Confidencial</h3>
+
+
+      <p>
+        Le pedimos amablemente que mantenga la confidencialidad de la información presentada en este nivel. Las ideas y el conocimiento contenidos aquí se aprecian mejor cuando se encuentran en la etapa correcta de crecimiento espiritual. La exposición prematura puede hacerlos incomprensibles, disminuyendo potencialmente su profundo impacto. Si bien hay otros niveles avanzados disponibles, su lanzamiento en esta plataforma depende de nuestra confianza en el respeto del público por estas pautas. La confiabilidad demostrada con el tiempo puede conducir a la revelación de estos niveles adicionales.
+      </p>
+
+      <p>
+        Para aquellos que han alcanzado un nivel significativo de crecimiento y conciencia espiritual, las revelaciones de este módulo probablemente sean transformadoras, superando cualquier experiencia previa en su viaje. Nuestra incapacidad para evaluar los niveles individuales de conciencia es la razón por la que enfatizamos una extensa 'limpieza' espiritual antes de llegar a este punto. Si se encuentra todavía agobiado con sentimientos de pesadez, irritación o frustración debido a UTE no resueltas, considere revisar el módulo anterior para dedicar horas adicionales. Este trabajo adicional asegurará que esté óptimamente preparado para abrazar y beneficiarse plenamente de la profunda oportunidad que se presenta en los pasos a continuación. La paciencia aquí es clave; no se apresure y no se pierda el profundo potencial de este módulo.
+      </p>
+
+
+
+      <br><br>
+      <hr><!-------------------------------------------------------------------------------------------->
+      <br><br>
+
+      <h3>Más Allá del Umbral de la Eternidad</h3>
+
+      <p>
+        En el Gnosticismo, el Demiurgo es una deidad creadora inferior, ignorante y a menudo arrogante que erróneamente forma el mundo material como una prisión defectuosa e ilusoria para las chispas divinas. Inconsciente del Dios verdadero y trascendente (la Mónada o Éter), el Demiurgo cree ser el ser supremo y atrapa activamente fragmentos de conciencia divina (Usted)
+
+        dentro de su creación, que luego sufren de amnesia con respecto a su verdadero y superior origen atemporal.
+      </p>
+
+      <p>
+        Nuestra investigación indica que estas fallas percibidas de la mente, el problema de ubicación temporal, no son accidentales sino intencionales, tejidas colectivamente en nuestra psique por algo como el Demiurgo. Este intrincado diseño sirve para aumentar el desafío en el juego metafísico de la vida, un juego que ha estado evolucionando a través de vastas extensiones de tiempo.
+        No hacemos ninguna afirmación sobre la existencia real del Demiurgo, pero algo o alguien seguramente se tomó muchas molestias para asegurar que nuestros recuerdos subconscientes se mezclaran. Finjamos que existe un Demiurgo, con el fin de explicar un concepto.
+      </p>
+
+      <p>
+        Al difuminar y fusionar recuerdos, el Demiurgo mantiene las chispas divinas confundidas, desorientadas e incapaces de recordar completamente su verdadera naturaleza, impidiendo así su escape. Esta sería una forma sutil e insidiosa de encarcelamiento.
+      </p>
+
+      <p>
+        Influencia Arcóntica: Los Arcontes (los subordinados del Demiurgo) trabajan activamente para mantener a la humanidad ignorante y enredada.
+        Podrían mantener o exacerbar activamente estas "fusiones de recuerdos" para preservar su control. Crean guerra, hambre, enfermedad y otras formas de sufrimiento para mantener a las chispas divinas atrapadas en el mundo material, evitando que despierten a su verdadera naturaleza y escapen de las garras del Demiurgo. Esta es una forma de guerra espiritual. </p>
+
+
+      <p>
+        Cada vez que las chispas divinas lograron elevarse colectivamente por encima del umbral de la influencia del Demiurgo, desentrañaban el juego, sin embargo, las chispas divinas eran muy incapaces de escapar debido a que aún tenían recuerdos fusionados dentro de la creación del Demiurgo.
+      </p>
+
+      <p>
+        La conclusión incorrecta a la que llegaron hace mucho tiempo las chispas divinas fue que el juego se había desentrañado porque había sido demasiado fácil. Parecía claro: un juego 'fácil' carece de atractivo. La simplicidad conducía al aburrimiento, acelerando el final de los ciclos de juego prematuramente.
+        Por lo tanto, abrazamos la complejidad y el desafío como elementos centrales de esta obra cósmica, creyendo erróneamente que era para nuestro beneficio.
+      </p>
+
+      Este ciclo de creación y destrucción
+      se ha repetido innumerables veces, y cada iteración se vuelve más compleja y desafiante que la anterior.
+      </p>
+
+      <p>
+        Cada iteración de este juego, a la que nos referimos como un 'ciclo', nace de las lecciones de sus predecesores. Con cada renovación, fuimos engañados para crear una versión aún más difícil del juego, una que nos mantendría comprometidos y desafiados.
+      </p>
+
+
+
+      <p>
+        Estos ciclos se denominan 'eternidades' no solo como una metáfora poética sino para subrayar su inmensa duración, un lapso tan vasto que el lenguaje terrenal falla en su descripción. Y, de hecho, ha habido innumerables de esas eternidades.
+      </p>
+
+
+
+
+      <div style="background-color:rgba(176, 224, 230, 0.301);">
+        <p>
+          Puede elevar el techo de su conciencia haciendo el siguiente ejercicio en &nbsp;<image-text>RippleNav</image-text>.&nbsp;
+        <ol>
+          <li>Encuentre el destello blanco de la creación al comienzo de esta eternidad.</li>
+          <li>Debería obtener una lectura en &nbsp;<image-text>RippleNav</image-text>&nbsp; cuando 'vea' el destello.</li>
+          <li>Encuentre cuántos seres estuvieron presentes en este evento de creación.</li>
+          <li>Para lo anterior, es un número enorme, así que mejor encuentre cuántos dígitos hay en el número.</li>
+          <li>Debería encontrar que el número contiene entre 400 y 500 mil millones de dígitos.</li>
+          <li>Cuando obtenga el número exacto de dígitos, reconocerá su verdad.</li>
+          <li>Tómese un momento para darse cuenta de que USTED estuvo allí.</li>
+          <li>Tómese un momento para darse cuenta de que USTED participó en esta creación.</li>
+          <li>Tómese un momento para darse cuenta de que USTED pensó, por ignorancia, que era necesario crear una nueva eternidad.</li>
+          <li>Este reconocimiento de la verdad produce un gran movimiento hacia la derecha en &nbsp;<image-text>RippleNav</image-text>&nbsp; y un sentimiento de euforia que puede durar varios minutos (o días...)</li>
+          <li>Tómese un descanso hasta que baje de su euforia...</li>
+          <li>Averigüe, como porcentaje, con cuántos de esos seres todavía tiene UTE.</li>
+          <li>Repita lo anterior para la eternidad anterior.</li>
+          <li>Haga lo anterior para las últimas 30 eternidades (o más).</li>
+          <li>Intente averiguar por cuántas eternidades ha pasado.</li>
+          <li>Intente averiguar cuántas eternidades actuales existen que también tienen el planeta Tierra.</li>
+        </ol>
+        </p>
+        <br>
+      </div>
+
+      <p>
+        Es interesante notar que el número encontrado es diferente para cada eternidad.
+      </p>
+
+      <br><br>
+      <hr><!-------------------------------------------------------------------------------------------->
+      <br><br>
+
+    <p> En nuestra opinión, los pueblos antiguos que escribieron sobre el Demiurgo, lo hicieron después de notar que muchos de sus pensamientos parecían originarse en otra parte.
+    Ahora sabemos que la verdadera fuente de esto proviene de las UTE que causan recuerdos fusionados y unen a los seres en seres compuestos.
+      Sus voces y pensamientos es lo que los pueblos antiguos decían que eran los Arcontes. Era su forma de explicar un fenómeno que habían descubierto.
+    </p>
+
+
+      <p>
+        Este módulo marca la culminación actual de nuestro programa.
+      </p>
+
+      <p>
+        Recomendamos que persista con las prácticas del Módulo anterior, aplicando sus principios tanto a los problemas cotidianos como a sus interpretaciones de los eventos globales. Esta aplicación continua ayudará a consolidar su aprendizaje y expandir su comprensión, permitiéndole continuar su viaje de crecimiento y descubrimiento.
+      </p>
+    </div>
+
+    <div id="Tab15" class="tabcontent">
+      <h2>Módulo 15</h2>
+      <p>No proporcionado.</p>
+    </div>
+
+
+
+
+  <script>
+    // --- Tab Panel Logic ---
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+    // Get the element with id="defaultOpen" and click on it to open the first tab
+    document.getElementById("defaultOpen").click();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- ======================================================= -->
+  <!-- STEP 1: DEFINE THE WASM DATA AND CONFIGURE THE MODULE   -->
+  <!-- This block MUST come before the mood.js script          -->
+  <!-- ======================================================= -->
+  <script>
+    // This is the global object Emscripten's glue code looks for.
+    var Module = {
+      // 1. Paste the Base64 string you generated from mood.wasm here.
+      wasmBinary: (() => {
+        const wasmBase64 = "AGFzbQEAAAABMQpgAAF/YAF/AGAAAGABfwF/YAABfWAAAXxgAX0BfWABfwF+YAN/f38Bf2ADf35/AX4CGwEDZW52E2Vtc2NyaXB0ZW5fZGF0ZV9ub3cABQMbGgIGBAIEAAcBAAEAAgAAAAEBAAIDAQMAAQMABAUBcAEBAQUGAQGAAoACBhcEfwFBgIAEC38BQQALfwFBAAt/AUEACweSAg4GbWVtb3J5AgARX193YXNtX2NhbGxfY3RvcnMAAQdnZXREYXRhAAUZX19pbmRpcmVjdF9mdW5jdGlvbl90YWJsZQEAEF9fZXJybm9fbG9jYXRpb24ABgZmZmx1c2gAFhVlbXNjcmlwdGVuX3N0YWNrX2luaXQADBllbXNjcmlwdGVuX3N0YWNrX2dldF9mcmVlAA0ZZW1zY3JpcHRlbl9zdGFja19nZXRfYmFzZQAOGGVtc2NyaXB0ZW5fc3RhY2tfZ2V0X2VuZAAPCXN0YWNrU2F2ZQAXDHN0YWNrUmVzdG9yZQAYCnN0YWNrQWxsb2MAGRxlbXNjcmlwdGVuX3N0YWNrX2dldF9jdXJyZW50ABoKnA0aBAAQDAvhAQMGfxN9AnwjACEBQRAhAiABIAJrIQMgAyAAOAIIIAMqAgghByAHuyEaRAAAAAAAAOA/IRsgGiAbYyEEQQEhBSAEIAVxIQYCQAJAIAZFDQAgAyoCCCEIQwAAAEAhCSAJIAiUIQogAyoCCCELIAogC5QhDCADIAw4AgwMAQsgAyoCCCENQwAAgD8hDiANIA6TIQ9DAAAAQCEQIBAgD5QhESADKgIIIRJDAACAPyETIBIgE5MhFCARjCEVIBUgFJQhFkMAAIA/IRcgFiAXkiEYIAMgGDgCDAsgAyoCDCEZIBkPC1ADAX8EfQV8EAkhACAAsiEBQwAAAE8hAiABIAKVIQMgA7shBUQAAAAAAADgvyEGIAUgBqAhB0R7FK5H4XqEPyEIIAcgCKIhCSAJtiEEIAQPC5sBAhN/AX0jACEAQRAhASAAIAFrIQJBACEDIAIgAzYCDAJAA0AgAigCDCEEQYAgIQUgBCEGIAUhByAGIAdIIQhBASEJIAggCXEhCiAKRQ0BIAIoAgwhC0GQgAQhDEECIQ0gCyANdCEOIAwgDmohD0MAAAA/IRMgDyATOAIAIAIoAgwhEEEBIREgECARaiESIAIgEjYCDAwACwALDwv/BAM/fwF+FX0jACEAQRAhASAAIAFrIQIgAiQAQQAhAyADKAKQgAUhBAJAIAQNAEEAIQUgBRAHIT8gP6chBiAGEAgQBEEBIQdBACEIIAggBzYCkIAFC0EAIQkgCbIhQCACIEA4AgxBACEKIAIgCjYCCAJAA0AgAigCCCELQYAgIQwgCyENIAwhDiANIA5IIQ9BASEQIA8gEHEhESARRQ0BEAMhQSACKAIIIRJBkIAEIRNBAiEUIBIgFHQhFSATIBVqIRYgFioCACFCIEIgQZIhQyAWIEM4AgAgAigCCCEXQZCABCEYQQIhGSAXIBl0IRogGCAaaiEbIBsqAgAhREEAIRwgHLIhRSBEIEVdIR1BASEeIB0gHnEhHwJAIB9FDQAgAigCCCEgQZCABCEhQQIhIiAgICJ0ISMgISAjaiEkQQAhJSAlsiFGICQgRjgCAAsgAigCCCEmQZCABCEnQQIhKCAmICh0ISkgJyApaiEqICoqAgAhR0MAAIA/IUggRyBIXiErQQEhLCArICxxIS0CQCAtRQ0AIAIoAgghLkGQgAQhL0ECITAgLiAwdCExIC8gMWohMkMAAIA/IUkgMiBJOAIACyACKAIIITNBkIAEITRBAiE1IDMgNXQhNiA0IDZqITcgNyoCACFKIAIqAgwhSyBLIEqSIUwgAiBMOAIMIAIoAgghOEEBITkgOCA5aiE6IAIgOjYCCAwACwALIAIqAgwhTUMAAIBFIU4gTSBOlSFPQQAhOyA7IE84AoCABEEAITwgPCoCgIAEIVAgUBACIVEgAiBROAIEIAIqAgQhUkMAUMNIIVMgUiBTlCFUQRAhPSACID1qIT4gPiQAIFQPCwYAQZSABQtNAgF8AX4CQAJAEABEAAAAAABAj0CjIgGZRAAAAAAAAOBDY0UNACABsCECDAELQoCAgICAgICAgH8hAgsCQCAARQ0AIAAgAjcDAAsgAgsPAEEAIABBf2qtNwOYgAULKQEBfkEAQQApA5iABUKt/tXk1IX9qNgAfkIBfCIANwOYgAUgAEIhiKcLBgAgACQBCwQAIwELEgBBgIAEJANBAEEPakFwcSQCCwcAIwAjAmsLBAAjAwsEACMCCwIACwIACwwAQaCABRAQQaSABQsIAEGggAUQEQsEAEEBCwIAC7oCAQN/AkAgAA0AQQAhAQJAQQAoAqiABUUNAEEAKAKogAUQFiEBCwJAQQAoAqiABUUNAEEAKAKogAUQFiABciEBCwJAEBIoAgAiAEUNAANAQQAhAgJAIAAoAkxBAEgNACAAEBQhAgsCQCAAKAIUIAAoAhxGDQAgABAWIAFyIQELAkAgAkUNACAAEBULIAAoAjgiAA0ACwsQEyABDwsCQAJAIAAoAkxBAE4NAEEBIQIMAQsgABAURSECCwJAAkACQCAAKAIUIAAoAhxGDQAgAEEAQQAgACgCJBEIABogACgCFA0AQX8hASACRQ0BDAILAkAgACgCBCIBIAAoAggiA0YNACAAIAEgA2usQQEgACgCKBEJABoLQQAhASAAQQA2AhwgAEIANwMQIABCADcCBCACDQELIAAQFQsgAQsEACMACwYAIAAkAAsSAQJ/IwAgAGtBcHEiASQAIAELBAAjAAsLDAEAQYCABAsEAAAAPw=="; // <-- YOUR GIANT BASE64 STRING GOES HERE
+
+        const binaryString = atob(wasmBase64);
+        const binaryLen = binaryString.length;
+        const bytes = new Uint8Array(binaryLen);
+        for (let i = 0; i < binaryLen; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes;
+      })(),
+      // Attach onRuntimeInitialized here as well
+      onRuntimeInitialized: function () {
+        console.log("WebAssembly module initialized.");
+        moduleInitialized = true;
+        if (ms_ > 0) { // show slider on main page
+          window.runNumberFinder();
+        }
+      }
+    };
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- ======================================================= -->
+  <!-- STEP 2: INCLUDE THE EMPSCRIPTEN GLUE CODE               -->
+  <!-- ======================================================= -->
+  <script>
+    // include: shell.js
+    // The Module object: Our interface to the outside world. We import
+    // and export values on it. There are various ways Module can be used:
+    // 1. Not defined. We create it here
+    // 2. A function parameter, function(Module) { ..generated code.. }
+    // 3. pre-run appended it, var Module = {}; ..generated code..
+    // 4. External script tag defines var Module.
+    // We need to check if Module already exists (e.g. case 3 above).
+    // Substitution will be replaced with actual code on later stage of the build,
+    // this way Closure Compiler will not mangle it (e.g. case 4. above).
+    // Note that if you want to run closure, and also to use Module
+    // after the generated code, you will need to define   var Module = {};
+    // before the code. Then that object will be used in the code, and you
+    // can continue to use Module afterwards as well.
+    //var Module = typeof Module != 'undefined' ? Module : {};
+
+    // --pre-jses are emitted after the Module integration code, so that they can
+    // refer to Module (if they choose; they can also define Module)
+
+
+    // Sometimes an existing Module object exists with properties
+    // meant to overwrite the default module functionality. Here
+    // we collect those properties and reapply _after_ we configure
+    // the current environment's defaults to avoid having to be so
+    // defensive during initialization.
+    var moduleOverrides = Object.assign({}, Module);
+
+    var arguments_ = [];
+    var thisProgram = './this.program';
+    var quit_ = (status, toThrow) => {
+      throw toThrow;
+    };
+
+    // Determine the runtime environment we are in. You can customize this by
+    // setting the ENVIRONMENT setting at compile time (see settings.js).
+
+    // Attempt to auto-detect the environment
+    var ENVIRONMENT_IS_WEB = typeof window == 'object';
+    var ENVIRONMENT_IS_WORKER = typeof importScripts == 'function';
+    // N.b. Electron.js environment is simultaneously a NODE-environment, but
+    // also a web environment.
+    var ENVIRONMENT_IS_NODE = typeof process == 'object' && typeof process.versions == 'object' && typeof process.versions.node == 'string';
+    var ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIRONMENT_IS_WORKER;
+
+    if (Module['ENVIRONMENT']) {
+      throw new Error('Module.ENVIRONMENT has been deprecated. To force the environment, use the ENVIRONMENT compile-time option (for example, -sENVIRONMENT=web or -sENVIRONMENT=node)');
+    }
+
+    // `/` should be present at the end if `scriptDirectory` is not empty
+    var scriptDirectory = '';
+    function locateFile(path) {
+      if (Module['locateFile']) {
+        return Module['locateFile'](path, scriptDirectory);
+      }
+      return scriptDirectory + path;
+    }
+
+    // Hooks that are implemented differently in different runtime environments.
+    var read_,
+      readAsync,
+      readBinary;
+
+    if (ENVIRONMENT_IS_NODE) {
+      if (typeof process == 'undefined' || !process.release || process.release.name !== 'node') throw new Error('not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)');
+
+      var nodeVersion = process.versions.node;
+      var numericVersion = nodeVersion.split('.').slice(0, 3);
+      numericVersion = (numericVersion[0] * 10000) + (numericVersion[1] * 100) + (numericVersion[2].split('-')[0] * 1);
+      var minVersion = 160000;
+      if (numericVersion < 160000) {
+        throw new Error('This emscripten-generated code requires node v16.0.0 (detected v' + nodeVersion + ')');
+      }
+
+      // `require()` is no-op in an ESM module, use `createRequire()` to construct
+      // the require()` function.  This is only necessary for multi-environment
+      // builds, `-sENVIRONMENT=node` emits a static import declaration instead.
+      // TODO: Swap all `require()`'s with `import()`'s?
+      // These modules will usually be used on Node.js. Load them eagerly to avoid
+      // the complexity of lazy-loading.
+      var fs = require('fs');
+      var nodePath = require('path');
+
+      if (ENVIRONMENT_IS_WORKER) {
+        scriptDirectory = nodePath.dirname(scriptDirectory) + '/';
+      } else {
+        scriptDirectory = __dirname + '/';
+      }
+
+      // include: node_shell_read.js
+      read_ = (filename, binary) => {
+        // We need to re-wrap `file://` strings to URLs. Normalizing isn't
+        // necessary in that case, the path should already be absolute.
+        filename = isFileURI(filename) ? new URL(filename) : nodePath.normalize(filename);
+        return fs.readFileSync(filename, binary ? undefined : 'utf8');
+      };
+
+      readBinary = (filename) => {
+        var ret = read_(filename, true);
+        if (!ret.buffer) {
+          ret = new Uint8Array(ret);
+        }
+        assert(ret.buffer);
+        return ret;
+      };
+
+      readAsync = (filename, onload, onerror, binary = true) => {
+        // See the comment in the `read_` function.
+        filename = isFileURI(filename) ? new URL(filename) : nodePath.normalize(filename);
+        fs.readFile(filename, binary ? undefined : 'utf8', (err, data) => {
+          if (err) onerror(err);
+          else onload(binary ? data.buffer : data);
+        });
+      };
+      // end include: node_shell_read.js
+      if (!Module['thisProgram'] && process.argv.length > 1) {
+        thisProgram = process.argv[1].replace(/\\/g, '/');
+      }
+
+      arguments_ = process.argv.slice(2);
+
+      if (typeof module != 'undefined') {
+        module['exports'] = Module;
+      }
+
+      process.on('uncaughtException', (ex) => {
+        // suppress ExitStatus exceptions from showing an error
+        if (ex !== 'unwind' && !(ex instanceof ExitStatus) && !(ex.context instanceof ExitStatus)) {
+          throw ex;
+        }
+      });
+
+      quit_ = (status, toThrow) => {
+        process.exitCode = status;
+        throw toThrow;
+      };
+
+      Module['inspect'] = () => '[Emscripten Module object]';
+
+    } else
+      if (ENVIRONMENT_IS_SHELL) {
+
+        if ((typeof process == 'object' && typeof require === 'function') || typeof window == 'object' || typeof importScripts == 'function') throw new Error('not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)');
+
+        if (typeof read != 'undefined') {
+          read_ = read;
+        }
+
+        readBinary = (f) => {
+          if (typeof readbuffer == 'function') {
+            return new Uint8Array(readbuffer(f));
+          }
+          let data = read(f, 'binary');
+          assert(typeof data == 'object');
+          return data;
+        };
+
+        readAsync = (f, onload, onerror) => {
+          setTimeout(() => onload(readBinary(f)));
+        };
+
+        if (typeof clearTimeout == 'undefined') {
+          globalThis.clearTimeout = (id) => { };
+        }
+
+        if (typeof setTimeout == 'undefined') {
+          // spidermonkey lacks setTimeout but we use it above in readAsync.
+          globalThis.setTimeout = (f) => (typeof f == 'function') ? f() : abort();
+        }
+
+        if (typeof scriptArgs != 'undefined') {
+          arguments_ = scriptArgs;
+        } else if (typeof arguments != 'undefined') {
+          arguments_ = arguments;
+        }
+
+        if (typeof quit == 'function') {
+          quit_ = (status, toThrow) => {
+            // Unlike node which has process.exitCode, d8 has no such mechanism. So we
+            // have no way to set the exit code and then let the program exit with
+            // that code when it naturally stops running (say, when all setTimeouts
+            // have completed). For that reason, we must call `quit` - the only way to
+            // set the exit code - but quit also halts immediately.  To increase
+            // consistency with node (and the web) we schedule the actual quit call
+            // using a setTimeout to give the current stack and any exception handlers
+            // a chance to run.  This enables features such as addOnPostRun (which
+            // expected to be able to run code after main returns).
+            setTimeout(() => {
+              if (!(toThrow instanceof ExitStatus)) {
+                let toLog = toThrow;
+                if (toThrow && typeof toThrow == 'object' && toThrow.stack) {
+                  toLog = [toThrow, toThrow.stack];
+                }
+                err(`exiting due to exception: ${toLog}`);
+              }
+              quit(status);
+            });
+            throw toThrow;
+          };
+        }
+
+        if (typeof print != 'undefined') {
+          // Prefer to use print/printErr where they exist, as they usually work better.
+          if (typeof console == 'undefined') console = /** @type{!Console} */({});
+          console.log = /** @type{!function(this:Console, ...*): undefined} */ (print);
+          console.warn = console.error = /** @type{!function(this:Console, ...*): undefined} */ (typeof printErr != 'undefined' ? printErr : print);
+        }
+
+      } else
+
+        // Note that this includes Node.js workers when relevant (pthreads is enabled).
+        // Node.js workers are detected as a combination of ENVIRONMENT_IS_WORKER and
+        // ENVIRONMENT_IS_NODE.
+        if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
+          if (ENVIRONMENT_IS_WORKER) { // Check worker, not web, since window could be polyfilled
+            scriptDirectory = self.location.href;
+          } else if (typeof document != 'undefined' && document.currentScript) { // web
+            scriptDirectory = document.currentScript.src;
+          }
+          // blob urls look like blob:http://site.com/etc/etc and we cannot infer anything from them.
+          // otherwise, slice off the final part of the url to find the script directory.
+          // if scriptDirectory does not contain a slash, lastIndexOf will return -1,
+          // and scriptDirectory will correctly be replaced with an empty string.
+          // If scriptDirectory contains a query (starting with ?) or a fragment (starting with #),
+          // they are removed because they could contain a slash.
+          if (scriptDirectory.indexOf('blob:') !== 0) {
+            scriptDirectory = scriptDirectory.substr(0, scriptDirectory.replace(/[?#].*/, "").lastIndexOf('/') + 1);
+          } else {
+            scriptDirectory = '';
+          }
+
+          if (!(typeof window == 'object' || typeof importScripts == 'function')) throw new Error('not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)');
+
+          // Differentiate the Web Worker from the Node Worker case, as reading must
+          // be done differently.
+          {
+            // include: web_or_worker_shell_read.js
+            read_ = (url) => {
+              var xhr = new XMLHttpRequest();
+              xhr.open('GET', url, false);
+              xhr.send(null);
+              return xhr.responseText;
+            }
+
+            if (ENVIRONMENT_IS_WORKER) {
+              readBinary = (url) => {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, false);
+                xhr.responseType = 'arraybuffer';
+                xhr.send(null);
+                return new Uint8Array(/** @type{!ArrayBuffer} */(xhr.response));
+              };
+            }
+
+            readAsync = (url, onload, onerror) => {
+              var xhr = new XMLHttpRequest();
+              xhr.open('GET', url, true);
+              xhr.responseType = 'arraybuffer';
+              xhr.onload = () => {
+                if (xhr.status == 200 || (xhr.status == 0 && xhr.response)) { // file URLs can return 0
+                  onload(xhr.response);
+                  return;
+                }
+                onerror();
+              };
+              xhr.onerror = onerror;
+              xhr.send(null);
+            }
+
+            // end include: web_or_worker_shell_read.js
+          }
+        } else {
+          throw new Error('environment detection error');
+        }
+
+    var out = Module['print'] || console.log.bind(console);
+    var err = Module['printErr'] || console.error.bind(console);
+
+    // Merge back in the overrides
+    Object.assign(Module, moduleOverrides);
+    // Free the object hierarchy contained in the overrides, this lets the GC
+    // reclaim data used e.g. in memoryInitializerRequest, which is a large typed array.
+    moduleOverrides = null;
+    checkIncomingModuleAPI();
+
+    // Emit code to handle expected values on the Module object. This applies Module.x
+    // to the proper local x. This has two benefits: first, we only emit it if it is
+    // expected to arrive, and second, by using a local everywhere else that can be
+    // minified.
+
+    if (Module['arguments']) arguments_ = Module['arguments']; legacyModuleProp('arguments', 'arguments_');
+
+    if (Module['thisProgram']) thisProgram = Module['thisProgram']; legacyModuleProp('thisProgram', 'thisProgram');
+
+    if (Module['quit']) quit_ = Module['quit']; legacyModuleProp('quit', 'quit_');
+
+    // perform assertions in shell.js after we set up out() and err(), as otherwise if an assertion fails it cannot print the message
+    // Assertions on removed incoming Module JS APIs.
+    assert(typeof Module['memoryInitializerPrefixURL'] == 'undefined', 'Module.memoryInitializerPrefixURL option was removed, use Module.locateFile instead');
+    assert(typeof Module['pthreadMainPrefixURL'] == 'undefined', 'Module.pthreadMainPrefixURL option was removed, use Module.locateFile instead');
+    assert(typeof Module['cdInitializerPrefixURL'] == 'undefined', 'Module.cdInitializerPrefixURL option was removed, use Module.locateFile instead');
+    assert(typeof Module['filePackagePrefixURL'] == 'undefined', 'Module.filePackagePrefixURL option was removed, use Module.locateFile instead');
+    assert(typeof Module['read'] == 'undefined', 'Module.read option was removed (modify read_ in JS)');
+    assert(typeof Module['readAsync'] == 'undefined', 'Module.readAsync option was removed (modify readAsync in JS)');
+    assert(typeof Module['readBinary'] == 'undefined', 'Module.readBinary option was removed (modify readBinary in JS)');
+    assert(typeof Module['setWindowTitle'] == 'undefined', 'Module.setWindowTitle option was removed (modify emscripten_set_window_title in JS)');
+    assert(typeof Module['TOTAL_MEMORY'] == 'undefined', 'Module.TOTAL_MEMORY has been renamed Module.INITIAL_MEMORY');
+    legacyModuleProp('asm', 'wasmExports');
+    legacyModuleProp('read', 'read_');
+    legacyModuleProp('readAsync', 'readAsync');
+    legacyModuleProp('readBinary', 'readBinary');
+    legacyModuleProp('setWindowTitle', 'setWindowTitle');
+    var IDBFS = 'IDBFS is no longer included by default; build with -lidbfs.js';
+    var PROXYFS = 'PROXYFS is no longer included by default; build with -lproxyfs.js';
+    var WORKERFS = 'WORKERFS is no longer included by default; build with -lworkerfs.js';
+    var FETCHFS = 'FETCHFS is no longer included by default; build with -lfetchfs.js';
+    var ICASEFS = 'ICASEFS is no longer included by default; build with -licasefs.js';
+    var JSFILEFS = 'JSFILEFS is no longer included by default; build with -ljsfilefs.js';
+    var OPFS = 'OPFS is no longer included by default; build with -lopfs.js';
+
+    var NODEFS = 'NODEFS is no longer included by default; build with -lnodefs.js';
+
+    assert(!ENVIRONMENT_IS_SHELL, "shell environment detected but not enabled at build time.  Add 'shell' to `-sENVIRONMENT` to enable.");
+
+
+    // end include: shell.js
+    // include: preamble.js
+    // === Preamble library stuff ===
+
+    // Documentation for the public APIs defined in this file must be updated in:
+    //    site/source/docs/api_reference/preamble.js.rst
+    // A prebuilt local version of the documentation is available at:
+    //    site/build/text/docs/api_reference/preamble.js.txt
+    // You can also build docs locally as HTML or other formats in site/
+    // An online HTML version (which may be of a different version of Emscripten)
+    //    is up at http://kripken.github.io/emscripten-site/docs/api_reference/preamble.js.html
+
+    var wasmBinary;
+    if (Module['wasmBinary']) wasmBinary = Module['wasmBinary']; legacyModuleProp('wasmBinary', 'wasmBinary');
+
+    if (typeof WebAssembly != 'object') {
+      abort('no native wasm support detected');
+    }
+
+    // Wasm globals
+
+    var wasmMemory;
+
+    //========================================
+    // Runtime essentials
+    //========================================
+
+    // whether we are quitting the application. no code should run after this.
+    // set in exit() and abort()
+    var ABORT = false;
+
+    // set by exit() and abort().  Passed to 'onExit' handler.
+    // NOTE: This is also used as the process return code code in shell environments
+    // but only when noExitRuntime is false.
+    var EXITSTATUS;
+
+    // In STRICT mode, we only define assert() when ASSERTIONS is set.  i.e. we
+    // don't define it at all in release modes.  This matches the behaviour of
+    // MINIMAL_RUNTIME.
+    // TODO(sbc): Make this the default even without STRICT enabled.
+    /** @type {function(*, string=)} */
+    function assert(condition, text) {
+      if (!condition) {
+        abort('Assertion failed' + (text ? ': ' + text : ''));
+      }
+    }
+
+    // We used to include malloc/free by default in the past. Show a helpful error in
+    // builds with assertions.
+    function _malloc() {
+      abort("malloc() called but not included in the build - add '_malloc' to EXPORTED_FUNCTIONS");
+    }
+    function _free() {
+      // Show a helpful error since we used to include free by default in the past.
+      abort("free() called but not included in the build - add '_free' to EXPORTED_FUNCTIONS");
+    }
+
+    // Memory management
+
+    var HEAP,
+      /** @type {!Int8Array} */
+      HEAP8,
+      /** @type {!Uint8Array} */
+      HEAPU8,
+      /** @type {!Int16Array} */
+      HEAP16,
+      /** @type {!Uint16Array} */
+      HEAPU16,
+      /** @type {!Int32Array} */
+      HEAP32,
+      /** @type {!Uint32Array} */
+      HEAPU32,
+      /** @type {!Float32Array} */
+      HEAPF32,
+      /** @type {!Float64Array} */
+      HEAPF64;
+
+    function updateMemoryViews() {
+      var b = wasmMemory.buffer;
+      Module['HEAP8'] = HEAP8 = new Int8Array(b);
+      Module['HEAP16'] = HEAP16 = new Int16Array(b);
+      Module['HEAPU8'] = HEAPU8 = new Uint8Array(b);
+      Module['HEAPU16'] = HEAPU16 = new Uint16Array(b);
+      Module['HEAP32'] = HEAP32 = new Int32Array(b);
+      Module['HEAPU32'] = HEAPU32 = new Uint32Array(b);
+      Module['HEAPF32'] = HEAPF32 = new Float32Array(b);
+      Module['HEAPF64'] = HEAPF64 = new Float64Array(b);
+    }
+
+    assert(!Module['STACK_SIZE'], 'STACK_SIZE can no longer be set at runtime.  Use -sSTACK_SIZE at link time')
+
+    assert(typeof Int32Array != 'undefined' && typeof Float64Array !== 'undefined' && Int32Array.prototype.subarray != undefined && Int32Array.prototype.set != undefined,
+      'JS engine does not provide full typed array support');
+
+    // If memory is defined in wasm, the user can't provide it, or set INITIAL_MEMORY
+    assert(!Module['wasmMemory'], 'Use of `wasmMemory` detected.  Use -sIMPORTED_MEMORY to define wasmMemory externally');
+    assert(!Module['INITIAL_MEMORY'], 'Detected runtime INITIAL_MEMORY setting.  Use -sIMPORTED_MEMORY to define wasmMemory dynamically');
+
+    // include: runtime_stack_check.js
+    // Initializes the stack cookie. Called at the startup of main and at the startup of each thread in pthreads mode.
+    function writeStackCookie() {
+      var max = _emscripten_stack_get_end();
+      assert((max & 3) == 0);
+      // If the stack ends at address zero we write our cookies 4 bytes into the
+      // stack.  This prevents interference with SAFE_HEAP and ASAN which also
+      // monitor writes to address zero.
+      if (max == 0) {
+        max += 4;
+      }
+      // The stack grow downwards towards _emscripten_stack_get_end.
+      // We write cookies to the final two words in the stack and detect if they are
+      // ever overwritten.
+      HEAPU32[((max) >> 2)] = 0x02135467;
+      HEAPU32[(((max) + (4)) >> 2)] = 0x89BACDFE;
+      // Also test the global address 0 for integrity.
+      HEAPU32[((0) >> 2)] = 1668509029;
+    }
+
+    function checkStackCookie() {
+      if (ABORT) return;
+      var max = _emscripten_stack_get_end();
+      // See writeStackCookie().
+      if (max == 0) {
+        max += 4;
+      }
+      var cookie1 = HEAPU32[((max) >> 2)];
+      var cookie2 = HEAPU32[(((max) + (4)) >> 2)];
+      if (cookie1 != 0x02135467 || cookie2 != 0x89BACDFE) {
+        abort(`Stack overflow! Stack cookie has been overwritten at ${ptrToString(max)}, expected hex dwords 0x89BACDFE and 0x2135467, but received ${ptrToString(cookie2)} ${ptrToString(cookie1)}`);
+      }
+      // Also test the global address 0 for integrity.
+      if (HEAPU32[((0) >> 2)] != 0x63736d65 /* 'emsc' */) {
+        abort('Runtime error: The application has corrupted its heap memory area (address zero)!');
+      }
+    }
+    // end include: runtime_stack_check.js
+    // include: runtime_assertions.js
+    // Endianness check
+    (function () {
+      var h16 = new Int16Array(1);
+      var h8 = new Int8Array(h16.buffer);
+      h16[0] = 0x6373;
+      if (h8[0] !== 0x73 || h8[1] !== 0x63) throw 'Runtime error: expected the system to be little-endian! (Run with -sSUPPORT_BIG_ENDIAN to bypass)';
+    })();
+
+    // end include: runtime_assertions.js
+    var __ATPRERUN__ = []; // functions called before the runtime is initialized
+    var __ATINIT__ = []; // functions called during startup
+    var __ATEXIT__ = []; // functions called during shutdown
+    var __ATPOSTRUN__ = []; // functions called after the main() is called
+
+    var runtimeInitialized = false;
+
+    function preRun() {
+      if (Module['preRun']) {
+        if (typeof Module['preRun'] == 'function') Module['preRun'] = [Module['preRun']];
+        while (Module['preRun'].length) {
+          addOnPreRun(Module['preRun'].shift());
+        }
+      }
+      callRuntimeCallbacks(__ATPRERUN__);
+    }
+
+    function initRuntime() {
+      assert(!runtimeInitialized);
+      runtimeInitialized = true;
+
+      checkStackCookie();
+
+
+      callRuntimeCallbacks(__ATINIT__);
+    }
+
+    function postRun() {
+      checkStackCookie();
+
+      if (Module['postRun']) {
+        if (typeof Module['postRun'] == 'function') Module['postRun'] = [Module['postRun']];
+        while (Module['postRun'].length) {
+          addOnPostRun(Module['postRun'].shift());
+        }
+      }
+
+      callRuntimeCallbacks(__ATPOSTRUN__);
+    }
+
+    function addOnPreRun(cb) {
+      __ATPRERUN__.unshift(cb);
+    }
+
+    function addOnInit(cb) {
+      __ATINIT__.unshift(cb);
+    }
+
+    function addOnExit(cb) {
+    }
+
+    function addOnPostRun(cb) {
+      __ATPOSTRUN__.unshift(cb);
+    }
+
+    // include: runtime_math.js
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/imul
+
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/fround
+
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/clz32
+
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc
+
+    assert(Math.imul, 'This browser does not support Math.imul(), build with LEGACY_VM_SUPPORT or POLYFILL_OLD_MATH_FUNCTIONS to add in a polyfill');
+    assert(Math.fround, 'This browser does not support Math.fround(), build with LEGACY_VM_SUPPORT or POLYFILL_OLD_MATH_FUNCTIONS to add in a polyfill');
+    assert(Math.clz32, 'This browser does not support Math.clz32(), build with LEGACY_VM_SUPPORT or POLYFILL_OLD_MATH_FUNCTIONS to add in a polyfill');
+    assert(Math.trunc, 'This browser does not support Math.trunc(), build with LEGACY_VM_SUPPORT or POLYFILL_OLD_MATH_FUNCTIONS to add in a polyfill');
+    // end include: runtime_math.js
+    // A counter of dependencies for calling run(). If we need to
+    // do asynchronous work before running, increment this and
+    // decrement it. Incrementing must happen in a place like
+    // Module.preRun (used by emcc to add file preloading).
+    // Note that you can add dependencies in preRun, even though
+    // it happens right before run - run will be postponed until
+    // the dependencies are met.
+    var runDependencies = 0;
+    var runDependencyWatcher = null;
+    var dependenciesFulfilled = null; // overridden to take different actions when all run dependencies are fulfilled
+    var runDependencyTracking = {};
+
+    function getUniqueRunDependency(id) {
+      var orig = id;
+      while (1) {
+        if (!runDependencyTracking[id]) return id;
+        id = orig + Math.random();
+      }
+    }
+
+    function addRunDependency(id) {
+      runDependencies++;
+
+      Module['monitorRunDependencies']?.(runDependencies);
+
+      if (id) {
+        assert(!runDependencyTracking[id]);
+        runDependencyTracking[id] = 1;
+        if (runDependencyWatcher === null && typeof setInterval != 'undefined') {
+          // Check for missing dependencies every few seconds
+          runDependencyWatcher = setInterval(() => {
+            if (ABORT) {
+              clearInterval(runDependencyWatcher);
+              runDependencyWatcher = null;
+              return;
+            }
+            var shown = false;
+            for (var dep in runDependencyTracking) {
+              if (!shown) {
+                shown = true;
+                err('still waiting on run dependencies:');
+              }
+              err(`dependency: ${dep}`);
+            }
+            if (shown) {
+              err('(end of list)');
+            }
+          }, 10000);
+        }
+      } else {
+        err('warning: run dependency added without ID');
+      }
+    }
+
+    function removeRunDependency(id) {
+      runDependencies--;
+
+      Module['monitorRunDependencies']?.(runDependencies);
+
+      if (id) {
+        assert(runDependencyTracking[id]);
+        delete runDependencyTracking[id];
+      } else {
+        err('warning: run dependency removed without ID');
+      }
+      if (runDependencies == 0) {
+        if (runDependencyWatcher !== null) {
+          clearInterval(runDependencyWatcher);
+          runDependencyWatcher = null;
+        }
+        if (dependenciesFulfilled) {
+          var callback = dependenciesFulfilled;
+          dependenciesFulfilled = null;
+          callback(); // can add another dependenciesFulfilled
+        }
+      }
+    }
+
+    /** @param {string|number=} what */
+    function abort(what) {
+      Module['onAbort']?.(what);
+
+      what = 'Aborted(' + what + ')';
+      // TODO(sbc): Should we remove printing and leave it up to whoever
+      // catches the exception?
+      err(what);
+
+      ABORT = true;
+      EXITSTATUS = 1;
+
+      // Use a wasm runtime error, because a JS error might be seen as a foreign
+      // exception, which means we'd run destructors on it. We need the error to
+      // simply make the program stop.
+      // FIXME This approach does not work in Wasm EH because it currently does not assume
+      // all RuntimeErrors are from traps; it decides whether a RuntimeError is from
+      // a trap or not based on a hidden field within the object. So at the moment
+      // we don't have a way of throwing a wasm trap from JS. TODO Make a JS API that
+      // allows this in the wasm spec.
+
+      // Suppress closure compiler warning here. Closure compiler's builtin extern
+      // defintion for WebAssembly.RuntimeError claims it takes no arguments even
+      // though it can.
+      // TODO(https://github.com/google/closure-compiler/pull/3913): Remove if/when upstream closure gets fixed.
+      /** @suppress {checkTypes} */
+      var e = new WebAssembly.RuntimeError(what);
+
+      // Throw the error whether or not MODULARIZE is set because abort is used
+      // in code paths apart from instantiation where an exception is expected
+      // to be thrown when abort is called.
+      throw e;
+    }
+
+    // include: memoryprofiler.js
+    // end include: memoryprofiler.js
+    // show errors on likely calls to FS when it was not included
+    var FS = {
+      error() {
+        abort('Filesystem support (FS) was not included. The problem is that you are using files from JS, but files were not used from C/C++, so filesystem support was not auto-included. You can force-include filesystem support with -sFORCE_FILESYSTEM');
+      },
+      init() { FS.error() },
+      createDataFile() { FS.error() },
+      createPreloadedFile() { FS.error() },
+      createLazyFile() { FS.error() },
+      open() { FS.error() },
+      mkdev() { FS.error() },
+      registerDevice() { FS.error() },
+      analyzePath() { FS.error() },
+
+      ErrnoError() { FS.error() },
+    };
+    Module['FS_createDataFile'] = FS.createDataFile;
+    Module['FS_createPreloadedFile'] = FS.createPreloadedFile;
+
+    // include: URIUtils.js
+    // Prefix of data URIs emitted by SINGLE_FILE and related options.
+    var dataURIPrefix = 'data:application/octet-stream;base64,';
+
+    /**
+     * Indicates whether filename is a base64 data URI.
+     * @noinline
+     */
+    var isDataURI = (filename) => filename.startsWith(dataURIPrefix);
+
+    /**
+     * Indicates whether filename is delivered via file protocol (as opposed to http/https)
+     * @noinline
+     */
+    var isFileURI = (filename) => filename.startsWith('file://');
+    // end include: URIUtils.js
+    function createExportWrapper(name) {
+      return function () {
+        assert(runtimeInitialized, `native function \`${name}\` called before runtime initialization`);
+        var f = wasmExports[name];
+        assert(f, `exported native function \`${name}\` not found`);
+        return f.apply(null, arguments);
+      };
+    }
+
+    // include: runtime_exceptions.js
+    // end include: runtime_exceptions.js
+    var wasmBinaryFile;
+    wasmBinaryFile = 'mood.wasm';
+    if (!isDataURI(wasmBinaryFile)) {
+      wasmBinaryFile = locateFile(wasmBinaryFile);
+    }
+
+    function getBinarySync(file) {
+      if (file == wasmBinaryFile && wasmBinary) {
+        return new Uint8Array(wasmBinary);
+      }
+      if (readBinary) {
+        return readBinary(file);
+      }
+      throw "both async and sync fetching of the wasm failed";
+    }
+
+    function getBinaryPromise(binaryFile) {
+      // If we don't have the binary yet, try to load it asynchronously.
+      // Fetch has some additional restrictions over XHR, like it can't be used on a file:// url.
+      // See https://github.com/github/fetch/pull/92#issuecomment-140665932
+      // Cordova or Electron apps are typically loaded from a file:// url.
+      // So use fetch if it is available and the url is not a file, otherwise fall back to XHR.
+      if (!wasmBinary
+        && (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER)) {
+        if (typeof fetch == 'function'
+          && !isFileURI(binaryFile)
+        ) {
+          return fetch(binaryFile, { credentials: 'same-origin' }).then((response) => {
+            if (!response['ok']) {
+              throw "failed to load wasm binary file at '" + binaryFile + "'";
+            }
+            return response['arrayBuffer']();
+          }).catch(() => getBinarySync(binaryFile));
+        }
+        else if (readAsync) {
+          // fetch is not available or url is file => try XHR (readAsync uses XHR internally)
+          return new Promise((resolve, reject) => {
+            readAsync(binaryFile, (response) => resolve(new Uint8Array(/** @type{!ArrayBuffer} */(response))), reject)
+          });
+        }
+      }
+
+      // Otherwise, getBinarySync should be able to get it synchronously
+      return Promise.resolve().then(() => getBinarySync(binaryFile));
+    }
+
+    function instantiateArrayBuffer(binaryFile, imports, receiver) {
+      return getBinaryPromise(binaryFile).then((binary) => {
+        return WebAssembly.instantiate(binary, imports);
+      }).then((instance) => {
+        return instance;
+      }).then(receiver, (reason) => {
+        err(`failed to asynchronously prepare wasm: ${reason}`);
+
+        // Warn on some common problems.
+        if (isFileURI(wasmBinaryFile)) {
+          err(`warning: Loading from a file URI (${wasmBinaryFile}) is not supported in most browsers. See https://emscripten.org/docs/getting_started/FAQ.html#how-do-i-run-a-local-webserver-for-testing-why-does-my-program-stall-in-downloading-or-preparing`);
+        }
+        abort(reason);
+      });
+    }
+
+    function instantiateAsync(binary, binaryFile, imports, callback) {
+      if (!binary &&
+        typeof WebAssembly.instantiateStreaming == 'function' &&
+        !isDataURI(binaryFile) &&
+        // Don't use streaming for file:// delivered objects in a webview, fetch them synchronously.
+        !isFileURI(binaryFile) &&
+        // Avoid instantiateStreaming() on Node.js environment for now, as while
+        // Node.js v18.1.0 implements it, it does not have a full fetch()
+        // implementation yet.
+        //
+        // Reference:
+        //   https://github.com/emscripten-core/emscripten/pull/16917
+        !ENVIRONMENT_IS_NODE &&
+        typeof fetch == 'function') {
+        return fetch(binaryFile, { credentials: 'same-origin' }).then((response) => {
+          // Suppress closure warning here since the upstream definition for
+          // instantiateStreaming only allows Promise<Repsponse> rather than
+          // an actual Response.
+          // TODO(https://github.com/google/closure-compiler/pull/3913): Remove if/when upstream closure is fixed.
+          /** @suppress {checkTypes} */
+          var result = WebAssembly.instantiateStreaming(response, imports);
+
+          return result.then(
+            callback,
+            function (reason) {
+              // We expect the most common failure cause to be a bad MIME type for the binary,
+              // in which case falling back to ArrayBuffer instantiation should work.
+              err(`wasm streaming compile failed: ${reason}`);
+              err('falling back to ArrayBuffer instantiation');
+              return instantiateArrayBuffer(binaryFile, imports, callback);
+            });
+        });
+      }
+      return instantiateArrayBuffer(binaryFile, imports, callback);
+    }
+
+    // Create the wasm instance.
+    // Receives the wasm imports, returns the exports.
+    function createWasm() {
+      // prepare imports
+      var info = {
+        'env': wasmImports,
+        'wasi_snapshot_preview1': wasmImports,
+      };
+      // Load the wasm module and create an instance of using native support in the JS engine.
+      // handle a generated wasm instance, receiving its exports and
+      // performing other necessary setup
+      /** @param {WebAssembly.Module=} module*/
+      function receiveInstance(instance, module) {
+        wasmExports = instance.exports;
+
+
+
+        wasmMemory = wasmExports['memory'];
+
+        assert(wasmMemory, "memory not found in wasm exports");
+        // This assertion doesn't hold when emscripten is run in --post-link
+        // mode.
+        // TODO(sbc): Read INITIAL_MEMORY out of the wasm file in post-link mode.
+        //assert(wasmMemory.buffer.byteLength === 16777216);
+        updateMemoryViews();
+
+        addOnInit(wasmExports['__wasm_call_ctors']);
+
+        removeRunDependency('wasm-instantiate');
+        return wasmExports;
+      }
+      // wait for the pthread pool (if any)
+      addRunDependency('wasm-instantiate');
+
+      // Prefer streaming instantiation if available.
+      // Async compilation can be confusing when an error on the page overwrites Module
+      // (for example, if the order of elements is wrong, and the one defining Module is
+      // later), so we save Module and check it later.
+      var trueModule = Module;
+      function receiveInstantiationResult(result) {
+        // 'result' is a ResultObject object which has both the module and instance.
+        // receiveInstance() will swap in the exports (to Module.asm) so they can be called
+        assert(Module === trueModule, 'the Module object should not be replaced during async compilation - perhaps the order of HTML elements is wrong?');
+        trueModule = null;
+        // TODO: Due to Closure regression https://github.com/google/closure-compiler/issues/3193, the above line no longer optimizes out down to the following line.
+        // When the regression is fixed, can restore the above PTHREADS-enabled path.
+        receiveInstance(result['instance']);
+      }
+
+      // User shell pages can write their own Module.instantiateWasm = function(imports, successCallback) callback
+      // to manually instantiate the Wasm module themselves. This allows pages to
+      // run the instantiation parallel to any other async startup actions they are
+      // performing.
+      // Also pthreads and wasm workers initialize the wasm instance through this
+      // path.
+      if (Module['instantiateWasm']) {
+
+        try {
+          return Module['instantiateWasm'](info, receiveInstance);
+        } catch (e) {
+          err(`Module.instantiateWasm callback failed with error: ${e}`);
+          return false;
+        }
+      }
+
+      instantiateAsync(wasmBinary, wasmBinaryFile, info, receiveInstantiationResult);
+      return {}; // no exports yet; we'll fill them in later
+    }
+
+    // Globals used by JS i64 conversions (see makeSetValue)
+    var tempDouble;
+    var tempI64;
+
+    // include: runtime_debug.js
+    function legacyModuleProp(prop, newName, incomming = true) {
+      if (!Object.getOwnPropertyDescriptor(Module, prop)) {
+        Object.defineProperty(Module, prop, {
+          configurable: true,
+          get() {
+            let extra = incomming ? ' (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)' : '';
+            abort(`\`Module.${prop}\` has been replaced by \`${newName}\`` + extra);
+
+          }
+        });
+      }
+    }
+
+    function ignoredModuleProp(prop) {
+      if (Object.getOwnPropertyDescriptor(Module, prop)) {
+        abort(`\`Module.${prop}\` was supplied but \`${prop}\` not included in INCOMING_MODULE_JS_API`);
+      }
+    }
+
+    // forcing the filesystem exports a few things by default
+    function isExportedByForceFilesystem(name) {
+      return name === 'FS_createPath' ||
+        name === 'FS_createDataFile' ||
+        name === 'FS_createPreloadedFile' ||
+        name === 'FS_unlink' ||
+        name === 'addRunDependency' ||
+        // The old FS has some functionality that WasmFS lacks.
+        name === 'FS_createLazyFile' ||
+        name === 'FS_createDevice' ||
+        name === 'removeRunDependency';
+    }
+
+    function missingGlobal(sym, msg) {
+      if (typeof globalThis !== 'undefined') {
+        Object.defineProperty(globalThis, sym, {
+          configurable: true,
+          get() {
+            warnOnce(`\`${sym}\` is not longer defined by emscripten. ${msg}`);
+            return undefined;
+          }
+        });
+      }
+    }
+
+    missingGlobal('buffer', 'Please use HEAP8.buffer or wasmMemory.buffer');
+    missingGlobal('asm', 'Please use wasmExports instead');
+
+    function missingLibrarySymbol(sym) {
+      if (typeof globalThis !== 'undefined' && !Object.getOwnPropertyDescriptor(globalThis, sym)) {
+        Object.defineProperty(globalThis, sym, {
+          configurable: true,
+          get() {
+            // Can't `abort()` here because it would break code that does runtime
+            // checks.  e.g. `if (typeof SDL === 'undefined')`.
+            var msg = `\`${sym}\` is a library symbol and not included by default; add it to your library.js __deps or to DEFAULT_LIBRARY_FUNCS_TO_INCLUDE on the command line`;
+            // DEFAULT_LIBRARY_FUNCS_TO_INCLUDE requires the name as it appears in
+            // library.js, which means $name for a JS name with no prefix, or name
+            // for a JS name like _name.
+            var librarySymbol = sym;
+            if (!librarySymbol.startsWith('_')) {
+              librarySymbol = '$' + sym;
+            }
+            msg += ` (e.g. -sDEFAULT_LIBRARY_FUNCS_TO_INCLUDE='${librarySymbol}')`;
+            if (isExportedByForceFilesystem(sym)) {
+              msg += '. Alternatively, forcing filesystem support (-sFORCE_FILESYSTEM) can export this for you';
+            }
+            warnOnce(msg);
+            return undefined;
+          }
+        });
+      }
+      // Any symbol that is not included from the JS libary is also (by definition)
+      // not exported on the Module object.
+      unexportedRuntimeSymbol(sym);
+    }
+
+    function unexportedRuntimeSymbol(sym) {
+      if (!Object.getOwnPropertyDescriptor(Module, sym)) {
+        Object.defineProperty(Module, sym, {
+          configurable: true,
+          get() {
+            var msg = `'${sym}' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the Emscripten FAQ)`;
+            if (isExportedByForceFilesystem(sym)) {
+              msg += '. Alternatively, forcing filesystem support (-sFORCE_FILESYSTEM) can export this for you';
+            }
+            abort(msg);
+          }
+        });
+      }
+    }
+
+    // Used by XXXXX_DEBUG settings to output debug messages.
+    function dbg(text) {
+      // TODO(sbc): Make this configurable somehow.  Its not always convenient for
+      // logging to show up as warnings.
+      console.warn.apply(console, arguments);
+    }
+    // end include: runtime_debug.js
+    // === Body ===
+
+    // end include: preamble.js
+
+    /** @constructor */
+    function ExitStatus(status) {
+      this.name = 'ExitStatus';
+      this.message = `Program terminated with exit(${status})`;
+      this.status = status;
+    }
+
+    var callRuntimeCallbacks = (callbacks) => {
+      while (callbacks.length > 0) {
+        // Pass the module as the first argument.
+        callbacks.shift()(Module);
+      }
+    };
+
+
+    /**
+     * @param {number} ptr
+     * @param {string} type
+     */
+    function getValue(ptr, type = 'i8') {
+      if (type.endsWith('*')) type = '*';
+      switch (type) {
+        case 'i1': return HEAP8[((ptr) >> 0)];
+        case 'i8': return HEAP8[((ptr) >> 0)];
+        case 'i16': return HEAP16[((ptr) >> 1)];
+        case 'i32': return HEAP32[((ptr) >> 2)];
+        case 'i64': abort('to do getValue(i64) use WASM_BIGINT');
+        case 'float': return HEAPF32[((ptr) >> 2)];
+        case 'double': return HEAPF64[((ptr) >> 3)];
+        case '*': return HEAPU32[((ptr) >> 2)];
+        default: abort(`invalid type for getValue: ${type}`);
+      }
+    }
+
+    var noExitRuntime = Module['noExitRuntime'] || true;
+
+    var ptrToString = (ptr) => {
+      assert(typeof ptr === 'number');
+      // With CAN_ADDRESS_2GB or MEMORY64, pointers are already unsigned.
+      ptr >>>= 0;
+      return '0x' + ptr.toString(16).padStart(8, '0');
+    };
+
+
+    /**
+     * @param {number} ptr
+     * @param {number} value
+     * @param {string} type
+     */
+    function setValue(ptr, value, type = 'i8') {
+      if (type.endsWith('*')) type = '*';
+      switch (type) {
+        case 'i1': HEAP8[((ptr) >> 0)] = value; break;
+        case 'i8': HEAP8[((ptr) >> 0)] = value; break;
+        case 'i16': HEAP16[((ptr) >> 1)] = value; break;
+        case 'i32': HEAP32[((ptr) >> 2)] = value; break;
+        case 'i64': abort('to do setValue(i64) use WASM_BIGINT');
+        case 'float': HEAPF32[((ptr) >> 2)] = value; break;
+        case 'double': HEAPF64[((ptr) >> 3)] = value; break;
+        case '*': HEAPU32[((ptr) >> 2)] = value; break;
+        default: abort(`invalid type for setValue: ${type}`);
+      }
+    }
+
+    var warnOnce = (text) => {
+      warnOnce.shown ||= {};
+      if (!warnOnce.shown[text]) {
+        warnOnce.shown[text] = 1;
+        if (ENVIRONMENT_IS_NODE) text = 'warning: ' + text;
+        err(text);
+      }
+    };
+
+    var _emscripten_date_now = () => Date.now();
+
+    var getCFunc = (ident) => {
+      var func = Module['_' + ident]; // closure exported function
+      assert(func, 'Cannot call unknown function ' + ident + ', make sure it is exported');
+      return func;
+    };
+
+    var writeArrayToMemory = (array, buffer) => {
+      assert(array.length >= 0, 'writeArrayToMemory array must have a length (should be an array or typed array)')
+      HEAP8.set(array, buffer);
+    };
+
+    var lengthBytesUTF8 = (str) => {
+      var len = 0;
+      for (var i = 0; i < str.length; ++i) {
+        // Gotcha: charCodeAt returns a 16-bit word that is a UTF-16 encoded code
+        // unit, not a Unicode code point of the character! So decode
+        // UTF16->UTF32->UTF8.
+        // See http://unicode.org/faq/utf_bom.html#utf16-3
+        var c = str.charCodeAt(i); // possibly a lead surrogate
+        if (c <= 0x7F) {
+          len++;
+        } else if (c <= 0x7FF) {
+          len += 2;
+        } else if (c >= 0xD800 && c <= 0xDFFF) {
+          len += 4; ++i;
+        } else {
+          len += 3;
+        }
+      }
+      return len;
+    };
+
+    var stringToUTF8Array = (str, heap, outIdx, maxBytesToWrite) => {
+      assert(typeof str === 'string', `stringToUTF8Array expects a string (got ${typeof str})`);
+      // Parameter maxBytesToWrite is not optional. Negative values, 0, null,
+      // undefined and false each don't write out any bytes.
+      if (!(maxBytesToWrite > 0))
+        return 0;
+
+      var startIdx = outIdx;
+      var endIdx = outIdx + maxBytesToWrite - 1; // -1 for string null terminator.
+      for (var i = 0; i < str.length; ++i) {
+        // Gotcha: charCodeAt returns a 16-bit word that is a UTF-16 encoded code
+        // unit, not a Unicode code point of the character! So decode
+        // UTF16->UTF32->UTF8.
+        // See http://unicode.org/faq/utf_bom.html#utf16-3
+        // For UTF8 byte structure, see http://en.wikipedia.org/wiki/UTF-8#Description
+        // and https://www.ietf.org/rfc/rfc2279.txt
+        // and https://tools.ietf.org/html/rfc3629
+        var u = str.charCodeAt(i); // possibly a lead surrogate
+        if (u >= 0xD800 && u <= 0xDFFF) {
+          var u1 = str.charCodeAt(++i);
+          u = 0x10000 + ((u & 0x3FF) << 10) | (u1 & 0x3FF);
+        }
+        if (u <= 0x7F) {
+          if (outIdx >= endIdx) break;
+          heap[outIdx++] = u;
+        } else if (u <= 0x7FF) {
+          if (outIdx + 1 >= endIdx) break;
+          heap[outIdx++] = 0xC0 | (u >> 6);
+          heap[outIdx++] = 0x80 | (u & 63);
+        } else if (u <= 0xFFFF) {
+          if (outIdx + 2 >= endIdx) break;
+          heap[outIdx++] = 0xE0 | (u >> 12);
+          heap[outIdx++] = 0x80 | ((u >> 6) & 63);
+          heap[outIdx++] = 0x80 | (u & 63);
+        } else {
+          if (outIdx + 3 >= endIdx) break;
+          if (u > 0x10FFFF) warnOnce('Invalid Unicode code point ' + ptrToString(u) + ' encountered when serializing a JS string to a UTF-8 string in wasm memory! (Valid unicode code points should be in range 0-0x10FFFF).');
+          heap[outIdx++] = 0xF0 | (u >> 18);
+          heap[outIdx++] = 0x80 | ((u >> 12) & 63);
+          heap[outIdx++] = 0x80 | ((u >> 6) & 63);
+          heap[outIdx++] = 0x80 | (u & 63);
+        }
+      }
+      // Null-terminate the pointer to the buffer.
+      heap[outIdx] = 0;
+      return outIdx - startIdx;
+    };
+    var stringToUTF8 = (str, outPtr, maxBytesToWrite) => {
+      assert(typeof maxBytesToWrite == 'number', 'stringToUTF8(str, outPtr, maxBytesToWrite) is missing the third parameter that specifies the length of the output buffer!');
+      return stringToUTF8Array(str, HEAPU8, outPtr, maxBytesToWrite);
+    };
+    var stringToUTF8OnStack = (str) => {
+      var size = lengthBytesUTF8(str) + 1;
+      var ret = stackAlloc(size);
+      stringToUTF8(str, ret, size);
+      return ret;
+    };
+
+    var UTF8Decoder = typeof TextDecoder != 'undefined' ? new TextDecoder('utf8') : undefined;
+
+    /**
+     * Given a pointer 'idx' to a null-terminated UTF8-encoded string in the given
+     * array that contains uint8 values, returns a copy of that string as a
+     * Javascript String object.
+     * heapOrArray is either a regular array, or a JavaScript typed array view.
+     * @param {number} idx
+     * @param {number=} maxBytesToRead
+     * @return {string}
+     */
+    var UTF8ArrayToString = (heapOrArray, idx, maxBytesToRead) => {
+      var endIdx = idx + maxBytesToRead;
+      var endPtr = idx;
+      // TextDecoder needs to know the byte length in advance, it doesn't stop on
+      // null terminator by itself.  Also, use the length info to avoid running tiny
+      // strings through TextDecoder, since .subarray() allocates garbage.
+      // (As a tiny code save trick, compare endPtr against endIdx using a negation,
+      // so that undefined means Infinity)
+      while (heapOrArray[endPtr] && !(endPtr >= endIdx)) ++endPtr;
+
+      if (endPtr - idx > 16 && heapOrArray.buffer && UTF8Decoder) {
+        return UTF8Decoder.decode(heapOrArray.subarray(idx, endPtr));
+      }
+      var str = '';
+      // If building with TextDecoder, we have already computed the string length
+      // above, so test loop end condition against that
+      while (idx < endPtr) {
+        // For UTF8 byte structure, see:
+        // http://en.wikipedia.org/wiki/UTF-8#Description
+        // https://www.ietf.org/rfc/rfc2279.txt
+        // https://tools.ietf.org/html/rfc3629
+        var u0 = heapOrArray[idx++];
+        if (!(u0 & 0x80)) { str += String.fromCharCode(u0); continue; }
+        var u1 = heapOrArray[idx++] & 63;
+        if ((u0 & 0xE0) == 0xC0) { str += String.fromCharCode(((u0 & 31) << 6) | u1); continue; }
+        var u2 = heapOrArray[idx++] & 63;
+        if ((u0 & 0xF0) == 0xE0) {
+          u0 = ((u0 & 15) << 12) | (u1 << 6) | u2;
+        } else {
+          if ((u0 & 0xF8) != 0xF0) warnOnce('Invalid UTF-8 leading byte ' + ptrToString(u0) + ' encountered when deserializing a UTF-8 string in wasm memory to a JS string!');
+          u0 = ((u0 & 7) << 18) | (u1 << 12) | (u2 << 6) | (heapOrArray[idx++] & 63);
+        }
+
+        if (u0 < 0x10000) {
+          str += String.fromCharCode(u0);
+        } else {
+          var ch = u0 - 0x10000;
+          str += String.fromCharCode(0xD800 | (ch >> 10), 0xDC00 | (ch & 0x3FF));
+        }
+      }
+      return str;
+    };
+
+    /**
+     * Given a pointer 'ptr' to a null-terminated UTF8-encoded string in the
+     * emscripten HEAP, returns a copy of that string as a Javascript String object.
+     *
+     * @param {number} ptr
+     * @param {number=} maxBytesToRead - An optional length that specifies the
+     *   maximum number of bytes to read. You can omit this parameter to scan the
+     *   string until the first 0 byte. If maxBytesToRead is passed, and the string
+     *   at [ptr, ptr+maxBytesToReadr[ contains a null byte in the middle, then the
+     *   string will cut short at that byte index (i.e. maxBytesToRead will not
+     *   produce a string of exact length [ptr, ptr+maxBytesToRead[) N.B. mixing
+     *   frequent uses of UTF8ToString() with and without maxBytesToRead may throw
+     *   JS JIT optimizations off, so it is worth to consider consistently using one
+     * @return {string}
+     */
+    var UTF8ToString = (ptr, maxBytesToRead) => {
+      assert(typeof ptr == 'number', `UTF8ToString expects a number (got ${typeof ptr})`);
+      return ptr ? UTF8ArrayToString(HEAPU8, ptr, maxBytesToRead) : '';
+    };
+
+    /**
+     * @param {string|null=} returnType
+     * @param {Array=} argTypes
+     * @param {Arguments|Array=} args
+     * @param {Object=} opts
+     */
+    var ccall = (ident, returnType, argTypes, args, opts) => {
+      // For fast lookup of conversion functions
+      var toC = {
+        'string': (str) => {
+          var ret = 0;
+          if (str !== null && str !== undefined && str !== 0) { // null string
+            // at most 4 bytes per UTF-8 code point, +1 for the trailing '\0'
+            ret = stringToUTF8OnStack(str);
+          }
+          return ret;
+        },
+        'array': (arr) => {
+          var ret = stackAlloc(arr.length);
+          writeArrayToMemory(arr, ret);
+          return ret;
+        }
+      };
+
+      function convertReturnValue(ret) {
+        if (returnType === 'string') {
+
+          return UTF8ToString(ret);
+        }
+        if (returnType === 'boolean') return Boolean(ret);
+        return ret;
+      }
+
+      var func = getCFunc(ident);
+      var cArgs = [];
+      var stack = 0;
+      assert(returnType !== 'array', 'Return type should not be "array".');
+      if (args) {
+        for (var i = 0; i < args.length; i++) {
+          var converter = toC[argTypes[i]];
+          if (converter) {
+            if (stack === 0) stack = stackSave();
+            cArgs[i] = converter(args[i]);
+          } else {
+            cArgs[i] = args[i];
+          }
+        }
+      }
+      var ret = func.apply(null, cArgs);
+      function onDone(ret) {
+        if (stack !== 0) stackRestore(stack);
+        return convertReturnValue(ret);
+      }
+
+      ret = onDone(ret);
+      return ret;
+    };
+
+
+
+    /**
+     * @param {string=} returnType
+     * @param {Array=} argTypes
+     * @param {Object=} opts
+     */
+    var cwrap = (ident, returnType, argTypes, opts) => {
+      return function () {
+        return ccall(ident, returnType, argTypes, arguments, opts);
+      }
+    };
+    function checkIncomingModuleAPI() {
+      ignoredModuleProp('fetchSettings');
+    }
+    var wasmImports = {
+      /** @export */
+      emscripten_date_now: _emscripten_date_now
+    };
+    var wasmExports = createWasm();
+    var ___wasm_call_ctors = createExportWrapper('__wasm_call_ctors');
+    var _getData = Module['_getData'] = createExportWrapper('getData');
+    var ___errno_location = createExportWrapper('__errno_location');
+    var _fflush = Module['_fflush'] = createExportWrapper('fflush');
+    var _emscripten_stack_init = () => (_emscripten_stack_init = wasmExports['emscripten_stack_init'])();
+    var _emscripten_stack_get_free = () => (_emscripten_stack_get_free = wasmExports['emscripten_stack_get_free'])();
+    var _emscripten_stack_get_base = () => (_emscripten_stack_get_base = wasmExports['emscripten_stack_get_base'])();
+    var _emscripten_stack_get_end = () => (_emscripten_stack_get_end = wasmExports['emscripten_stack_get_end'])();
+    var stackSave = createExportWrapper('stackSave');
+    var stackRestore = createExportWrapper('stackRestore');
+    var stackAlloc = createExportWrapper('stackAlloc');
+    var _emscripten_stack_get_current = () => (_emscripten_stack_get_current = wasmExports['emscripten_stack_get_current'])();
+
+
+    // include: postamble.js
+    // === Auto-generated postamble setup entry stuff ===
+
+    Module['ccall'] = ccall;
+    Module['cwrap'] = cwrap;
+    var missingLibrarySymbols = [
+      'writeI53ToI64',
+      'writeI53ToI64Clamped',
+      'writeI53ToI64Signaling',
+      'writeI53ToU64Clamped',
+      'writeI53ToU64Signaling',
+      'readI53FromI64',
+      'readI53FromU64',
+      'convertI32PairToI53',
+      'convertI32PairToI53Checked',
+      'convertU32PairToI53',
+      'zeroMemory',
+      'exitJS',
+      'getHeapMax',
+      'abortOnCannotGrowMemory',
+      'growMemory',
+      'isLeapYear',
+      'ydayFromDate',
+      'arraySum',
+      'addDays',
+      'setErrNo',
+      'inetPton4',
+      'inetNtop4',
+      'inetPton6',
+      'inetNtop6',
+      'readSockaddr',
+      'writeSockaddr',
+      'getHostByName',
+      'initRandomFill',
+      'randomFill',
+      'getCallstack',
+      'emscriptenLog',
+      'convertPCtoSourceLocation',
+      'readEmAsmArgs',
+      'jstoi_q',
+      'jstoi_s',
+      'getExecutableName',
+      'listenOnce',
+      'autoResumeAudioContext',
+      'dynCallLegacy',
+      'getDynCaller',
+      'dynCall',
+      'handleException',
+      'keepRuntimeAlive',
+      'runtimeKeepalivePush',
+      'runtimeKeepalivePop',
+      'callUserCallback',
+      'maybeExit',
+      'asmjsMangle',
+      'asyncLoad',
+      'alignMemory',
+      'mmapAlloc',
+      'handleAllocatorInit',
+      'HandleAllocator',
+      'getNativeTypeSize',
+      'STACK_SIZE',
+      'STACK_ALIGN',
+      'POINTER_SIZE',
+      'ASSERTIONS',
+      'uleb128Encode',
+      'sigToWasmTypes',
+      'generateFuncType',
+      'convertJsFunctionToWasm',
+      'getEmptyTableSlot',
+      'updateTableMap',
+      'getFunctionAddress',
+      'addFunction',
+      'removeFunction',
+      'reallyNegative',
+      'unSign',
+      'strLen',
+      'reSign',
+      'formatString',
+      'intArrayFromString',
+      'intArrayToString',
+      'AsciiToString',
+      'stringToAscii',
+      'UTF16ToString',
+      'stringToUTF16',
+      'lengthBytesUTF16',
+      'UTF32ToString',
+      'stringToUTF32',
+      'lengthBytesUTF32',
+      'stringToNewUTF8',
+      'registerKeyEventCallback',
+      'maybeCStringToJsString',
+      'findEventTarget',
+      'findCanvasEventTarget',
+      'getBoundingClientRect',
+      'fillMouseEventData',
+      'registerMouseEventCallback',
+      'registerWheelEventCallback',
+      'registerUiEventCallback',
+      'registerFocusEventCallback',
+      'fillDeviceOrientationEventData',
+      'registerDeviceOrientationEventCallback',
+      'fillDeviceMotionEventData',
+      'registerDeviceMotionEventCallback',
+      'screenOrientation',
+      'fillOrientationChangeEventData',
+      'registerOrientationChangeEventCallback',
+      'fillFullscreenChangeEventData',
+      'registerFullscreenChangeEventCallback',
+      'JSEvents_requestFullscreen',
+      'JSEvents_resizeCanvasForFullscreen',
+      'registerRestoreOldStyle',
+      'hideEverythingExceptGivenElement',
+      'restoreHiddenElements',
+      'setLetterbox',
+      'softFullscreenResizeWebGLRenderTarget',
+      'doRequestFullscreen',
+      'fillPointerlockChangeEventData',
+      'registerPointerlockChangeEventCallback',
+      'registerPointerlockErrorEventCallback',
+      'requestPointerLock',
+      'fillVisibilityChangeEventData',
+      'registerVisibilityChangeEventCallback',
+      'registerTouchEventCallback',
+      'fillGamepadEventData',
+      'registerGamepadEventCallback',
+      'disableGamepadApiIfItThrows',
+      'registerBeforeUnloadEventCallback',
+      'fillBatteryEventData',
+      'battery',
+      'registerBatteryEventCallback',
+      'setCanvasElementSize',
+      'getCanvasElementSize',
+      'demangle',
+      'demangleAll',
+      'jsStackTrace',
+      'stackTrace',
+      'getEnvStrings',
+      'checkWasiClock',
+      'flush_NO_FILESYSTEM',
+      'wasiRightsToMuslOFlags',
+      'wasiOFlagsToMuslOFlags',
+      'createDyncallWrapper',
+      'safeSetTimeout',
+      'setImmediateWrapped',
+      'clearImmediateWrapped',
+      'polyfillSetImmediate',
+      'getPromise',
+      'makePromise',
+      'idsToPromises',
+      'makePromiseCallback',
+      'ExceptionInfo',
+      'findMatchingCatch',
+      'Browser_asyncPrepareDataCounter',
+      'setMainLoop',
+      'getSocketFromFD',
+      'getSocketAddress',
+      'FS_createPreloadedFile',
+      'FS_modeStringToFlags',
+      'FS_getMode',
+      'FS_stdin_getChar',
+      'FS_createDataFile',
+      'FS_unlink',
+      'FS_mkdirTree',
+      '_setNetworkCallback',
+      'heapObjectForWebGLType',
+      'heapAccessShiftForWebGLHeap',
+      'webgl_enable_ANGLE_instanced_arrays',
+      'webgl_enable_OES_vertex_array_object',
+      'webgl_enable_WEBGL_draw_buffers',
+      'webgl_enable_WEBGL_multi_draw',
+      'emscriptenWebGLGet',
+      'computeUnpackAlignedImageSize',
+      'colorChannelsInGlTextureFormat',
+      'emscriptenWebGLGetTexPixelData',
+      '__glGenObject',
+      'emscriptenWebGLGetUniform',
+      'webglGetUniformLocation',
+      'webglPrepareUniformLocationsBeforeFirstUse',
+      'webglGetLeftBracePos',
+      'emscriptenWebGLGetVertexAttrib',
+      '__glGetActiveAttribOrUniform',
+      'writeGLArray',
+      'registerWebGlEventCallback',
+      'runAndAbortIfError',
+      'SDL_unicode',
+      'SDL_ttfContext',
+      'SDL_audio',
+      'ALLOC_NORMAL',
+      'ALLOC_STACK',
+      'allocate',
+      'writeStringToMemory',
+      'writeAsciiToMemory',
+    ];
+    missingLibrarySymbols.forEach(missingLibrarySymbol)
+
+    var unexportedSymbols = [
+      'run',
+      'addOnPreRun',
+      'addOnInit',
+      'addOnPreMain',
+      'addOnExit',
+      'addOnPostRun',
+      'addRunDependency',
+      'removeRunDependency',
+      'FS_createFolder',
+      'FS_createPath',
+      'FS_createLazyFile',
+      'FS_createLink',
+      'FS_createDevice',
+      'FS_readFile',
+      'out',
+      'err',
+      'callMain',
+      'abort',
+      'wasmMemory',
+      'wasmExports',
+      'stackAlloc',
+      'stackSave',
+      'stackRestore',
+      'getTempRet0',
+      'setTempRet0',
+      'writeStackCookie',
+      'checkStackCookie',
+      'ptrToString',
+      'ENV',
+      'MONTH_DAYS_REGULAR',
+      'MONTH_DAYS_LEAP',
+      'MONTH_DAYS_REGULAR_CUMULATIVE',
+      'MONTH_DAYS_LEAP_CUMULATIVE',
+      'ERRNO_CODES',
+      'ERRNO_MESSAGES',
+      'DNS',
+      'Protocols',
+      'Sockets',
+      'timers',
+      'warnOnce',
+      'UNWIND_CACHE',
+      'readEmAsmArgsArray',
+      'wasmTable',
+      'noExitRuntime',
+      'getCFunc',
+      'freeTableIndexes',
+      'functionsInTableMap',
+      'setValue',
+      'getValue',
+      'PATH',
+      'PATH_FS',
+      'UTF8Decoder',
+      'UTF8ArrayToString',
+      'UTF8ToString',
+      'stringToUTF8Array',
+      'stringToUTF8',
+      'lengthBytesUTF8',
+      'UTF16Decoder',
+      'stringToUTF8OnStack',
+      'writeArrayToMemory',
+      'JSEvents',
+      'specialHTMLTargets',
+      'currentFullscreenStrategy',
+      'restoreOldWindowedStyle',
+      'ExitStatus',
+      'promiseMap',
+      'uncaughtExceptionCount',
+      'exceptionLast',
+      'exceptionCaught',
+      'Browser',
+      'wget',
+      'SYSCALLS',
+      'preloadPlugins',
+      'FS_stdin_getChar_buffer',
+      'FS',
+      'MEMFS',
+      'TTY',
+      'PIPEFS',
+      'SOCKFS',
+      'tempFixedLengthArray',
+      'miniTempWebGLFloatBuffers',
+      'miniTempWebGLIntBuffers',
+      'GL',
+      'emscripten_webgl_power_preferences',
+      'AL',
+      'GLUT',
+      'EGL',
+      'GLEW',
+      'IDBStore',
+      'SDL',
+      'SDL_gfx',
+      'allocateUTF8',
+      'allocateUTF8OnStack',
+    ];
+    unexportedSymbols.forEach(unexportedRuntimeSymbol);
+
+
+
+    var calledRun;
+
+    dependenciesFulfilled = function runCaller() {
+      // If run has never been called, and we should call run (INVOKE_RUN is true, and Module.noInitialRun is not false)
+      if (!calledRun) run();
+      if (!calledRun) dependenciesFulfilled = runCaller; // try this again later, after new deps are fulfilled
+    };
+
+    function stackCheckInit() {
+      // This is normally called automatically during __wasm_call_ctors but need to
+      // get these values before even running any of the ctors so we call it redundantly
+      // here.
+      _emscripten_stack_init();
+      // TODO(sbc): Move writeStackCookie to native to to avoid this.
+      writeStackCookie();
+    }
+
+    function run() {
+
+      if (runDependencies > 0) {
+        return;
+      }
+
+      stackCheckInit();
+
+      preRun();
+
+      // a preRun added a dependency, run will be called later
+      if (runDependencies > 0) {
+        return;
+      }
+
+      function doRun() {
+        // run may have just been called through dependencies being fulfilled just in this very frame,
+        // or while the async setStatus time below was happening
+        if (calledRun) return;
+        calledRun = true;
+        Module['calledRun'] = true;
+
+        if (ABORT) return;
+
+        initRuntime();
+
+        if (Module['onRuntimeInitialized']) Module['onRuntimeInitialized']();
+
+        assert(!Module['_main'], 'compiled without a main, but one is present. if you added it from JS, use Module["onRuntimeInitialized"]');
+
+        postRun();
+      }
+
+      if (Module['setStatus']) {
+        Module['setStatus']('Running...');
+        setTimeout(function () {
+          setTimeout(function () {
+            Module['setStatus']('');
+          }, 1);
+          doRun();
+        }, 1);
+      } else {
+        doRun();
+      }
+      checkStackCookie();
+    }
+
+    function checkUnflushedContent() {
+      // Compiler settings do not allow exiting the runtime, so flushing
+      // the streams is not possible. but in ASSERTIONS mode we check
+      // if there was something to flush, and if so tell the user they
+      // should request that the runtime be exitable.
+      // Normally we would not even include flush() at all, but in ASSERTIONS
+      // builds we do so just for this check, and here we see if there is any
+      // content to flush, that is, we check if there would have been
+      // something a non-ASSERTIONS build would have not seen.
+      // How we flush the streams depends on whether we are in SYSCALLS_REQUIRE_FILESYSTEM=0
+      // mode (which has its own special function for this; otherwise, all
+      // the code is inside libc)
+      var oldOut = out;
+      var oldErr = err;
+      var has = false;
+      out = err = (x) => {
+        has = true;
+      }
+      try { // it doesn't matter if it fails
+        _fflush(0);
+      } catch (e) { }
+      out = oldOut;
+      err = oldErr;
+      if (has) {
+        warnOnce('stdio streams had content in them that was not flushed. you should set EXIT_RUNTIME to 1 (see the Emscripten FAQ), or make sure to emit a newline when you printf etc.');
+        warnOnce('(this may also be due to not including full filesystem support - try building with -sFORCE_FILESYSTEM)');
+      }
+    }
+
+    if (Module['preInit']) {
+      if (typeof Module['preInit'] == 'function') Module['preInit'] = [Module['preInit']];
+      while (Module['preInit'].length > 0) {
+        Module['preInit'].pop()();
+      }
+    }
+
+    run();
+
+
+    // end include: postamble.js
+
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Extracted JavaScript for the Top Panel -->
+
+  <script>
+    // Global variables required by the panel functions
+    var running = false;
+    var moduleInitialized = false;
+    var currentModule;
+    var cv = '...';
+    var ms_ = 1;
+
+    var slider2 = document.getElementById("myRange");
+    var slider = document.getElementById("m1");
+    var showSens = document.getElementById("sens");
+
+    function lerp(v0, v1, t) {
+      return (((1 - t) * v0) + (t * v1));
+    }
+
+    slider2.addEventListener('input', function () {
+      showSens.innerHTML = this.value;
+    });
+
+    // --- Core Panel Functions ---
+
+    window.runNumberFinder = function () {
+      console.log("runNumberFinder called");
+
+      if (!slider2 || !slider || !showSens) {
+        console.error("Slider elements not found!");
+        return;
+      }
+
+      let lastTime = null; // Used to track delta time
+      let last_sPos = 0;
+      running = true;
+
+      function frame(timestamp) {
+        if (running && moduleInitialized) {
+
+          // 1. Calculate how much time has passed since the last frame
+          if (lastTime === null) lastTime = timestamp;
+          let deltaTime = timestamp - lastTime;
+          lastTime = timestamp;
+
+          // Cap deltaTime to 100ms. If the user tabs out and tabs back in,
+          // this prevents a massive jump in the animation.
+          if (deltaTime > 100) deltaTime = 16.666;
+
+          try {
+            let target_sPos = Module._getData() * 0.5;
+
+            // 2. Make the lerp factor frame-rate independent.
+            // 16.666ms is the target frame time for 60fps.
+            // By raising 0.95 to the power of (deltaTime / 16.666),
+            // the smoothing curve is mathematically identical on 60Hz, 120Hz, 144Hz, etc.
+            let timeAdjustedFactor = Math.pow(0.95, deltaTime / 16.666);
+
+            // 3. Apply the dynamic time-adjusted factor to your lerp
+            let smoothed_sPos = lerp(target_sPos, last_sPos, timeAdjustedFactor);
+
+            // 4. Update the last position for the next frame's smoothing.
+            last_sPos = smoothed_sPos;
+
+            // 5. Apply sensitivity from the slider.
+            let final_sPos = smoothed_sPos * (slider2.value / 100);
+
+            slider.style.backgroundPosition = final_sPos + "px";
+
+          } catch (e) {
+            running = false;
+            console.error("WASM function call failed. Stopping animation.", e);
+          }
+
+          showSens.innerHTML = slider2.value;
+          window.requestAnimationFrame(frame);
+        }
+      }
+
+      // Start the animation frame loop if the module is ready
+      if (moduleInitialized) {
+        window.requestAnimationFrame(frame);
+      } else {
+        console.warn("WASM module not initialized. Animation will not start yet.");
+      }
+    }
+
+  </script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
